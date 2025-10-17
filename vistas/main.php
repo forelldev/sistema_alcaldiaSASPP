@@ -16,6 +16,7 @@
             <?php if ($_SESSION['id_rol'] == 1 || $_SESSION['id_rol'] == 4) { ?>
             <a href="<?= BASE_URL ?>/busqueda" class="nueva-solicitud-btn"><i class="fas fa-plus"></i> Nueva Solicitud</a>
             <?php } ?>
+            <?php if(!$_SESSION['id_rol'] == 0) {?>
           <div class="notification-dropdown">
                 <button class="notificaciones-btn" id="btn-notificaciones">
                     <i class="fas fa-bell"></i> Notificaciones
@@ -54,21 +55,22 @@
                 </div>
             </div>
         </div>
+        <?php } ?>
     </header>
     <nav class="navbar" aria-label="Menú principal">
         <?php if ($_SESSION['id_rol'] == 4) { ?>
-        <div class="dropdown">
-            <button class="nav-btn dropdown-toggle" aria-label="Menú" id="menuDropdownBtn">
-            <i class="fas fa-bars"></i> Menú
-        </button>
-        <div class="dropdown-menu" id="menuDropdown">
-                <a href="<?= BASE_URL ?>/beneficiarios_lista"><i class="fas fa-users"></i> Lista de beneficiarios</a>
-                <a href="<?= BASE_URL ?>/registro"><i class="fas fa-user-plus"></i> Registrar Usuario</a>
-                <a href="<?= BASE_URL ?>/reportes_acciones"><i class="fas fa-file-alt"></i> Reportes de Acciones</a>
-                <a href="<?= BASE_URL ?>/reportes"><i class="fas fa-chart-bar"></i> Reportes</a>
-                <a href="<?= BASE_URL ?>/limites"><i class="fas fa-user-shield"></i> Límite por rol</a>
+            <div class="dropdown">
+                <button class="nav-btn dropdown-toggle" aria-label="Menú" id="menuDropdownBtn">
+                <i class="fas fa-bars"></i> Menú
+            </button>
+            <div class="dropdown-menu" id="menuDropdown">
+                    <a href="<?= BASE_URL ?>/beneficiarios_lista"><i class="fas fa-users"></i> Lista de beneficiarios</a>
+                    <a href="<?= BASE_URL ?>/registro"><i class="fas fa-user-plus"></i> Registrar Usuario</a>
+                    <a href="<?= BASE_URL ?>/reportes_acciones"><i class="fas fa-file-alt"></i> Reportes de Acciones</a>
+                    <a href="<?= BASE_URL ?>/reportes"><i class="fas fa-chart-bar"></i> Reportes</a>
+                    <a href="<?= BASE_URL ?>/limites"><i class="fas fa-user-shield"></i> Límite por rol</a>
+            </div>
         </div>
-    </div>
     <div class="dropdown">
         <button class="nav-btn dropdown-toggle" aria-label="Menú" id="menuDropdownBtn">
             <i class="fas fa-chart-bar"></i> Estadísticas
@@ -79,6 +81,8 @@
         </div>
     </div>
     <?php } ?>
+
+    <?php if(!$_SESSION['id_rol'] == 0){ ?>
     <div class="dropdown">
         <button class="nav-btn dropdown-toggle" aria-label="Menú" id="menuDropdownBtn">
             <i class="fas fa-folder-open"></i> Solicitudes
@@ -93,6 +97,7 @@
             <?php } ?>
         </div>
     </div>
+    <?php } ?>
     <?php if ($_SESSION['id_rol'] == 1 || $_SESSION['id_rol'] == 4) { ?>
     <div class="dropdown">
         <button class="nav-btn dropdown-toggle" aria-label="Menú" id="menuDropdownBtn">
@@ -100,6 +105,16 @@
         </button>
         <div class="dropdown-menu" id="menuDropdown">
             <a href="<?= BASE_URL ?>/constancias"><i class="fas fa-file-alt"></i> Constancias</a>
+    <?php } ?>
+        </div>
+    </div>
+    <?php if ($_SESSION['id_rol'] == 0 || $_SESSION['id_rol'] == 4) { ?>
+    <div class="dropdown">
+        <button class="nav-btn dropdown-toggle" aria-label="Menú" id="menuDropdownBtn">
+            <i class="fas fa-file-alt"></i> Casos
+        </button>
+        <div class="dropdown-menu" id="menuDropdown">
+            <a href="<?= BASE_URL ?>/casos_lista"><i class="fas fa-file-alt"></i> Lista de Casos</a>
     <?php } ?>
         </div>
     </div>

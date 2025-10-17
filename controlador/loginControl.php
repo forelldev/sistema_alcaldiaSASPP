@@ -42,6 +42,10 @@ class LoginControl {
         $datos = [];
         $msj = null;
         // Notificaciones generales (solicitud_ayuda)
+        $notificaciones_casos = Notificaciones::mostrar_notificaciones_casos();
+        if($notificaciones_casos['exito']){
+            $datos['casos'] = $notificaciones_casos['datos']['casos'];
+        }
         $notificaciones = Notificaciones::mostrarNotificaciones($_SESSION['id_rol']);
         if ($notificaciones['exito']) {
             $datos = $notificaciones['datos'] ?? [];
@@ -126,41 +130,61 @@ public function validarSesionAjax() {
         $nombre = $_POST['nombre'] ?? null;
         $apellido = $_POST['apellido'] ?? null;
         $id_rol = $_POST['id_rol'] ?? null;
+        $correo = $_POST['correo'] ?? null;
         $sesion = 'False'; // Valor inicial de sesión
 
         $msj = '';
 
-        if ($ci && $clave && $nombre && $apellido && $id_rol) {
+        // Lista de campos requeridos con nombres legibles
+        $campos = [
+            'ci' => 'Cédula',
+            'clave' => 'Clave',
+            'nombre' => 'Nombre',
+            'apellido' => 'Apellido',
+            'id_rol' => 'Rol',
+            'correo' => 'Correo'
+        ];
+
+        // Verificar campos faltantes
+        $faltantes = [];
+        foreach ($campos as $claveCampo => $nombreCampo) {
+            if (!isset($_POST[$claveCampo]) || $_POST[$claveCampo] === '') {
+                $faltantes[] = $nombreCampo;
+            }
+        }
+
+        if (empty($faltantes)) {
             $claveHash = password_hash($clave, PASSWORD_DEFAULT);
             $resultado = UserModel::crearCuenta($ci, $claveHash, $nombre, $apellido, $id_rol, $sesion);
-                if (str_starts_with($resultado, 'error_sql:')) {
-                    $msj = "❌ Error SQL: " . substr($resultado, strlen('error_sql:'));
+
+            if (str_starts_with($resultado, 'error_sql:')) {
+                $msj = "❌ Error SQL: " . substr($resultado, strlen('error_sql:'));
+            } else {
+                switch ($resultado) {
+                    case 'exito':
+                        $msj = "✅ Usuario registrado correctamente.";
+                        break;
+                    case 'usuario_existente':
+                        $msj = "❌ Error: el usuario con esta Cédula de Identidad ya existe.";
+                        break;
+                    case 'limite_superado':
+                        $msj = "🚫 Error: se ha alcanzado el límite de usuarios para este rol.";
+                        break;
+                    case 'rol_invalido':
+                        $msj = "⚠️ Error: el rol seleccionado no es válido.";
+                        break;
+                    default:
+                        $msj = "❌ Error desconocido al registrar el usuario.";
+                        break;
                 }
-                else{
-                    switch ($resultado) {
-                        case 'exito':
-                            $msj = "✅ Usuario registrado correctamente.";
-                            break;
-                        case 'usuario_existente':
-                            $msj = "❌ Error: el usuario con esta Cédula de Identidad ya existe.";
-                            break;
-                        case 'limite_superado':
-                            $msj = "🚫 Error: se ha alcanzado el límite de usuarios para este rol.";
-                            break;
-                        case 'rol_invalido':
-                            $msj = "⚠️ Error: el rol seleccionado no es válido.";
-                            break;
-                        default:
-                            $msj = "❌ Error desconocido al registrar el usuario.";
-                            break;
-                        }
-                    }
+            }
         } else {
-            $msj = "⚠️ Error: datos incompletos.";
+            $msj = "⚠️ Faltan los siguientes campos: " . implode(', ', $faltantes) . ".";
         }
-        // Mostrar la vista con el msj
+
         require_once 'vistas/registro.php';
     }
+
 
 
         public static function registroIndex() {

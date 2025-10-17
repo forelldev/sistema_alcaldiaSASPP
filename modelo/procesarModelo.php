@@ -61,7 +61,7 @@ public static function solicitud($id_doc, $estado) {
                 ");
                 $stmt4->execute([$id_doc]);
                 $stmt5 = $conexion->prepare("UPDATE solicitud_ayuda_fecha SET fecha_renovacion = ? WHERE id_des = ?");
-                $stmt5->execute([$fecha,$id_des]);
+                $stmt5->execute([$fecha,$id_doc]);
             }
         }
 
@@ -452,7 +452,7 @@ public static function solicitud($id_doc, $estado) {
                 $stmt = $conexion->prepare("INSERT INTO reportes_acciones (id_doc,fecha,accion,ci) VALUES (?, ?, ?, ?)");
                 $stmt->execute([$id_doc,$fecha,$accion,$ci]);
                 return ['exito' => true];
-            } catch(Excepction $e){
+            } catch(Exception $e){
                 $conexion->rollBack();
                 error_log("Error al insertar el reporte: " . $e->getMessage());
                 return ['exito' => false, 'error' => $e->getMessage()];

@@ -32,12 +32,18 @@
             <input type="text" name="ci" placeholder="Cédula de Identidad" required>
         </div>
         <div class="campo-user">
+            <label for="correo">Correo:</label>
+            <input type="text" name="correo" placeholder="Correo" required>
+        </div>
+        <div class="campo-user">
             <label for="clave">Contraseña</label>
             <input type="password" name="clave" placeholder="Contraseña" required>
         </div>
         <div class="campo-user">
             <label for="id_rol">Rol</label>
-            <select name="id_rol">
+            <select name="id_rol" required>
+                <option value="">Seleccione</option>
+                <option value="0">Atencion Al Ciudadano</option>
                 <option value="1">Promotor Social</option>
                 <option value="2">Despacho</option>
                 <option value="3">Administración</option>

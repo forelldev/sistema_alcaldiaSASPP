@@ -384,6 +384,143 @@ require_once 'conexiondb.php';
         }
     }
 
+    public static function mostrar_notis_caso($id_caso) {
+    try {
+        $conexion = DB::conectar();
+
+        $consulta = "
+            SELECT 
+                c.id_manual, c.ci, c.estado,
+                cf.fecha, cf.visto,
+                cc.tipo_ayuda, cc.categoria,
+                ci.descripcion, ci.creador,
+                sol.nombre AS nombre,
+                sol.apellido AS apellido
+            FROM casos c
+            LEFT JOIN casos_fecha cf ON c.id_caso = cf.id_caso
+            LEFT JOIN casos_categoria cc ON c.id_caso = cc.id_despacho
+            LEFT JOIN casos_info ci ON c.id_caso = ci.id_caso
+            LEFT JOIN solicitantes sol ON c.ci = sol.ci
+            WHERE c.id_caso = :id_caso
+        ";
+
+        $busqueda = $conexion->prepare($consulta);
+        $busqueda->bindParam(':id_caso', $id_caso, PDO::PARAM_INT);
+        $busqueda->execute();
+        $resultado = $busqueda->fetchAll(PDO::FETCH_ASSOC);
+
+        if ($resultado) {
+            return [
+                'exito' => true,
+                'datos' => $resultado
+            ];
+        } else {
+            return [
+                'exito' => false,
+                'mensaje' => 'No se encontraron datos para el ID proporcionado.'
+            ];
+        }
+    } catch (PDOException $e) {
+        error_log("Error en mostrar_notis_desarrollo: " . $e->getMessage());
+        return [
+            'exito' => false,
+            'mensaje' => 'Error al realizar la búsqueda.'
+        ];
+    }
+}
+
+    public static function mostrar_notificaciones_casos() {
+    try {
+        $conexion = DB::conectar();
+        $resultadoFinal = [];
+
+        // Determinar dirección según el rol del usuario
+        $direccion = null;
+        switch ($_SESSION['id_rol']) {
+            case 1:
+                $direccion = 'Desarrollo Social';
+                break;
+            case 2:
+                $direccion = 'Despacho';
+                break;
+            case 3:
+                $direccion = 'Administracion';
+                break;
+            case 4:
+                $direccion = null; // master: sin filtro de dirección
+                break;
+            default:
+                return [
+                    'exito' => false,
+                    'mensaje' => 'Rol no autorizado para ver notificaciones.'
+                ];
+        }
+
+        // Construir consulta base
+        $consulta = "
+            SELECT 
+                c.*, 
+                ci.*, 
+                cc.*, 
+                cf.*
+            FROM casos c
+            LEFT JOIN casos_info ci ON c.id_caso = ci.id_caso
+            LEFT JOIN casos_categoria cc ON c.id_caso = cc.id_caso
+            LEFT JOIN casos_fecha cf ON c.id_caso = cf.id_caso
+            WHERE c.estado = 'Sin Atender'
+              AND cf.visto = 0
+        ";
+
+        // Agregar filtro por dirección si no es master
+        if ($direccion !== null) {
+            $consulta .= " AND c.direccion = :direccion";
+        }
+
+        $consulta .= " ORDER BY cf.fecha DESC";
+
+        $stmt = $conexion->prepare($consulta);
+
+        if ($direccion !== null) {
+            $stmt->bindParam(':direccion', $direccion, PDO::PARAM_STR);
+        }
+
+        $stmt->execute();
+        $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if ($resultado) {
+            foreach ($resultado as &$item) {
+                $item['id_doc'] = $item['id_caso']; // compatibilidad con vistas
+            }
+            unset($item);
+
+            $resultadoFinal['casos'] = [
+                'tabla' => 'casos_fecha',
+                'id_name' => 'id_caso',
+                'datos' => $resultado
+            ];
+        }
+
+        if (!empty($resultadoFinal)) {
+            return [
+                'exito' => true,
+                'datos' => $resultadoFinal
+            ];
+        } else {
+            return [
+                'exito' => false,
+                'mensaje' => 'No se encontraron notificaciones sin atender.'
+            ];
+        }
+
+    } catch (Exception $e) {
+        error_log("Error al obtener notificaciones de casos: " . $e->getMessage());
+        return [
+            'exito' => false,
+            'mensaje' => 'Error al obtener notificaciones: ' . $e->getMessage()
+        ];
+    }
+}
+
 
   }
 ?>

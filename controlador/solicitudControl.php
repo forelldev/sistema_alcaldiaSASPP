@@ -114,14 +114,11 @@ class SolicitudControl {
                     extract($data);
                 }
             }
-
-            require_once 'vistas/solicitud_formulario.php';
         }
         else{
-
             $msj = "Solicitud inválida. No se recibieron datos. (Método POST)";
-            require_once 'vistas/solicitud_formulario.php';
         }
+        require_once 'vistas/solicitud_formulario.php';
 }
 
 

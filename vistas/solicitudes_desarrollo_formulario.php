@@ -67,7 +67,7 @@
         <label for="cedula">Cédula:</label>
         <input type="text" name="ci" placeholder="Cédula"
               value="<?= htmlspecialchars($datos_beneficiario['solicitante']['ci'] ?? '') ?>"
-              <?= $readonly ? 'readonly' : '' ?> required>
+              <?= $readonly ? 'readonly' : '' ?> required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
 
         <input type="hidden" name="tipo_ayuda" value="Otros">
         <input type="submit" value="Registrar Solicitud">
@@ -77,5 +77,10 @@
 
     </form>
 </body>
+<script>
+    const BASE_PATH = "<?php echo BASE_PATH; ?>";
+</script>
+<script src="<?= BASE_URL ?>/public/js/sesionReload.js"></script>
+<script src="<?= BASE_URL ?>/public/js/validarSesion.js"></script>
 <script src="<?= BASE_URL ?>/public/js/solicitud_urgencia.js"></script>
 </html>

@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-10-2025 a las 16:51:58
+-- Tiempo de generación: 18-10-2025 a las 01:24:38
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Versión de PHP: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,8 +18,92 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `sistema`
+-- Base de datos: `sistema_alcaldia`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `casos`
+--
+
+CREATE TABLE `casos` (
+  `id_caso` int(11) NOT NULL,
+  `id_manual` varchar(50) NOT NULL,
+  `ci` varchar(20) NOT NULL,
+  `estado` varchar(50) DEFAULT 'Sin Atender',
+  `direccion` varchar(75) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `casos`
+--
+
+INSERT INTO `casos` (`id_caso`, `id_manual`, `ci`, `estado`, `direccion`) VALUES
+(2, '1313', '3215', 'Sin Atender', 'Desarrollo Social'),
+(3, '232323', '3215', 'Sin Atender', 'Desarrollo Social');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `casos_categoria`
+--
+
+CREATE TABLE `casos_categoria` (
+  `id` int(11) NOT NULL,
+  `id_caso` int(11) NOT NULL,
+  `tipo_ayuda` varchar(100) NOT NULL,
+  `categoria` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `casos_categoria`
+--
+
+INSERT INTO `casos_categoria` (`id`, `id_caso`, `tipo_ayuda`, `categoria`) VALUES
+(1, 3, 'Medicamentos', 'Salud');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `casos_fecha`
+--
+
+CREATE TABLE `casos_fecha` (
+  `id` int(11) NOT NULL,
+  `id_caso` int(11) NOT NULL,
+  `fecha` datetime NOT NULL,
+  `visto` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `casos_fecha`
+--
+
+INSERT INTO `casos_fecha` (`id`, `id_caso`, `fecha`, `visto`) VALUES
+(2, 2, '2025-10-17 18:16:03', 0),
+(3, 3, '2025-10-17 18:50:04', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `casos_info`
+--
+
+CREATE TABLE `casos_info` (
+  `id` int(11) NOT NULL,
+  `id_caso` int(11) NOT NULL,
+  `descripcion` text NOT NULL,
+  `creador` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `casos_info`
+--
+
+INSERT INTO `casos_info` (`id`, `id_caso`, `descripcion`, `creador`) VALUES
+(2, 2, 'bueno', 'atencion alciudadano'),
+(3, 3, 'Solicitud de Medicamentos para Jose Gonzalez en oficina de Desarrollo Social', 'atencion alciudadano');
 
 -- --------------------------------------------------------
 
@@ -213,14 +297,14 @@ CREATE TABLE `despacho` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `despacho_descripcion`
+-- Estructura de tabla para la tabla `despacho_categoria`
 --
 
-CREATE TABLE `despacho_descripcion` (
+CREATE TABLE `despacho_categoria` (
   `id` int(11) NOT NULL,
-  `id_despacho` int(11) NOT NULL,
-  `asunto` varchar(255) NOT NULL,
-  `creador` varchar(255) NOT NULL
+  `id_despacho` int(11) DEFAULT NULL,
+  `categoria` varchar(100) DEFAULT NULL,
+  `tipo_ayuda` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -235,6 +319,19 @@ CREATE TABLE `despacho_fecha` (
   `fecha` datetime NOT NULL,
   `fecha_modificacion` datetime NOT NULL,
   `visto` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `despacho_info`
+--
+
+CREATE TABLE `despacho_info` (
+  `id` int(11) NOT NULL,
+  `id_despacho` int(11) NOT NULL,
+  `descripcion` varchar(255) NOT NULL,
+  `creador` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -343,7 +440,11 @@ INSERT INTO `reportes_acciones` (`id`, `id_doc`, `fecha`, `accion`, `ci`) VALUES
 (73, 6, '2025-10-15 09:23:47', 'Editó la solicitud', 3434),
 (74, 6, '2025-10-15 09:24:08', 'Habilitó la solicitud', 3434),
 (75, 6, '2025-10-15 09:24:26', 'Inhabilitó la solicitud razón: pq si', 3434),
-(76, 6, '2025-10-15 09:24:38', 'Habilitó la solicitud', 3434);
+(76, 6, '2025-10-15 09:24:38', 'Habilitó la solicitud', 3434),
+(77, 1, '2025-10-17 16:57:13', 'Creó un nuevo caso.', 3434),
+(78, 1, '2025-10-17 17:08:20', 'Creó un nuevo caso.', 3434),
+(79, 2, '2025-10-17 18:16:03', 'Creó un nuevo caso.', 4343),
+(80, 3, '2025-10-17 18:50:04', 'Creó un nuevo caso.', 4343);
 
 -- --------------------------------------------------------
 
@@ -437,7 +538,12 @@ INSERT INTO `reportes_entradas` (`id`, `ci`, `fecha_entrada`, `fecha_salida`) VA
 (72, 3434, '2025-10-12 12:09:37', '2025-10-13 09:54:00'),
 (73, 3434, '2025-10-13 09:54:06', '2025-10-14 18:14:03'),
 (74, 3434, '2025-10-14 18:21:47', '2025-10-14 21:23:53'),
-(75, 3434, '2025-10-15 08:18:45', '0000-00-00 00:00:00');
+(75, 3434, '2025-10-15 08:18:45', '2025-10-17 12:49:35'),
+(76, 123, '2025-10-17 12:37:08', '2025-10-17 12:40:15'),
+(77, 3434, '2025-10-17 12:49:38', '2025-10-17 17:30:48'),
+(78, 3434, '2025-10-17 17:30:51', '2025-10-17 17:52:25'),
+(79, 4343, '2025-10-17 17:52:28', '2025-10-17 19:21:42'),
+(80, 34, '2025-10-17 19:21:59', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -456,6 +562,7 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`id_rol`, `nombre_rol`, `limite`) VALUES
+(0, 'Atencion', 1),
 (1, 'Promotor Social', 1),
 (2, 'Despacho', 1),
 (3, 'Administración', 1),
@@ -891,10 +998,11 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`ci`, `clave`, `id_rol`, `sesion`) VALUES
-(34, '$2y$10$B3B3.eLTtqT.iJcPnh/m4.uSJ7M7j3tKvcLZii.D3B9BI5lgp2CwW', 1, 'False'),
+(34, '$2y$10$B3B3.eLTtqT.iJcPnh/m4.uSJ7M7j3tKvcLZii.D3B9BI5lgp2CwW', 1, 'True'),
 (123, '$2y$10$EUbg2UC5PG3DD2IUBrCf7OrQE.8AYST9kKAPP5MqmTU.9feSrr6Cm', 2, 'False'),
 (321, '$2y$10$b7GW4RMYoXkT7w35iXmYWuL3faGW5px.ZEi7bk4sMZZPzEwQcnjKK', 3, 'False'),
-(3434, '$2y$10$aaqOa8LN3ZdV7hviTWx7eufhAGPgvqZDWxgXmuUElh6iWfbKqTRXm', 4, 'True');
+(3434, '$2y$10$aaqOa8LN3ZdV7hviTWx7eufhAGPgvqZDWxgXmuUElh6iWfbKqTRXm', 4, 'False'),
+(4343, '$2y$10$a5bHaRGPIeE58e1chr9EBOxtFHqwKdhqBlsT.EasiWq/nooj3lfs6', 0, 'False');
 
 -- --------------------------------------------------------
 
@@ -915,10 +1023,11 @@ CREATE TABLE `usuarios_info` (
 --
 
 INSERT INTO `usuarios_info` (`id`, `ci`, `nombre`, `apellido`, `correo`) VALUES
-(2, 3434, 'Admin', 'Supremo', 'forell.music@gmail.com'),
+(2, 3434, 'Alex', 'Reyes', 'forell.music@gmail.com'),
 (5, 123, 'pepe', 'gonzalez', ''),
 (6, 34, 'promotor', 'socio', ''),
-(7, 321, 'administracion', 'gonzalez', '');
+(7, 321, 'administracion', 'gonzalez', ''),
+(8, 4343, 'atencion', 'alciudadano', '');
 
 -- --------------------------------------------------------
 
@@ -936,6 +1045,34 @@ CREATE TABLE `usuarios_recuperacion` (
 --
 -- Índices para tablas volcadas
 --
+
+--
+-- Indices de la tabla `casos`
+--
+ALTER TABLE `casos`
+  ADD PRIMARY KEY (`id_caso`),
+  ADD UNIQUE KEY `id_manual` (`id_manual`);
+
+--
+-- Indices de la tabla `casos_categoria`
+--
+ALTER TABLE `casos_categoria`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_caso` (`id_caso`);
+
+--
+-- Indices de la tabla `casos_fecha`
+--
+ALTER TABLE `casos_fecha`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_caso` (`id_caso`);
+
+--
+-- Indices de la tabla `casos_info`
+--
+ALTER TABLE `casos_info`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_caso` (`id_caso`);
 
 --
 -- Indices de la tabla `comunidades`
@@ -956,11 +1093,11 @@ ALTER TABLE `despacho`
   ADD PRIMARY KEY (`id_despacho`);
 
 --
--- Indices de la tabla `despacho_descripcion`
+-- Indices de la tabla `despacho_categoria`
 --
-ALTER TABLE `despacho_descripcion`
+ALTER TABLE `despacho_categoria`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_descripcion_despacho` (`id_despacho`);
+  ADD KEY `id_despacho` (`id_despacho`);
 
 --
 -- Indices de la tabla `despacho_fecha`
@@ -968,6 +1105,13 @@ ALTER TABLE `despacho_descripcion`
 ALTER TABLE `despacho_fecha`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_fecha_despacho` (`id_despacho`);
+
+--
+-- Indices de la tabla `despacho_info`
+--
+ALTER TABLE `despacho_info`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_descripcion_despacho` (`id_despacho`);
 
 --
 -- Indices de la tabla `despacho_invalido`
@@ -1172,6 +1316,30 @@ ALTER TABLE `usuarios_recuperacion`
 --
 
 --
+-- AUTO_INCREMENT de la tabla `casos`
+--
+ALTER TABLE `casos`
+  MODIFY `id_caso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `casos_categoria`
+--
+ALTER TABLE `casos_categoria`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `casos_fecha`
+--
+ALTER TABLE `casos_fecha`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `casos_info`
+--
+ALTER TABLE `casos_info`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT de la tabla `comunidades`
 --
 ALTER TABLE `comunidades`
@@ -1190,15 +1358,21 @@ ALTER TABLE `despacho`
   MODIFY `id_despacho` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT de la tabla `despacho_descripcion`
+-- AUTO_INCREMENT de la tabla `despacho_categoria`
 --
-ALTER TABLE `despacho_descripcion`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+ALTER TABLE `despacho_categoria`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `despacho_fecha`
 --
 ALTER TABLE `despacho_fecha`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `despacho_info`
+--
+ALTER TABLE `despacho_info`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
@@ -1211,19 +1385,19 @@ ALTER TABLE `despacho_invalido`
 -- AUTO_INCREMENT de la tabla `reportes_acciones`
 --
 ALTER TABLE `reportes_acciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
 
 --
 -- AUTO_INCREMENT de la tabla `reportes_entradas`
 --
 ALTER TABLE `reportes_entradas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id_rol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_rol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `solicitantes`
@@ -1361,7 +1535,7 @@ ALTER TABLE `solicitud_descripcion`
 -- AUTO_INCREMENT de la tabla `usuarios_info`
 --
 ALTER TABLE `usuarios_info`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios_recuperacion`
@@ -1374,16 +1548,40 @@ ALTER TABLE `usuarios_recuperacion`
 --
 
 --
--- Filtros para la tabla `despacho_descripcion`
+-- Filtros para la tabla `casos_categoria`
 --
-ALTER TABLE `despacho_descripcion`
-  ADD CONSTRAINT `fk_descripcion_despacho` FOREIGN KEY (`id_despacho`) REFERENCES `despacho` (`id_despacho`) ON DELETE CASCADE;
+ALTER TABLE `casos_categoria`
+  ADD CONSTRAINT `casos_categoria_ibfk_1` FOREIGN KEY (`id_caso`) REFERENCES `casos` (`id_caso`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `casos_fecha`
+--
+ALTER TABLE `casos_fecha`
+  ADD CONSTRAINT `casos_fecha_ibfk_1` FOREIGN KEY (`id_caso`) REFERENCES `casos` (`id_caso`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `casos_info`
+--
+ALTER TABLE `casos_info`
+  ADD CONSTRAINT `casos_info_ibfk_1` FOREIGN KEY (`id_caso`) REFERENCES `casos` (`id_caso`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `despacho_categoria`
+--
+ALTER TABLE `despacho_categoria`
+  ADD CONSTRAINT `despacho_categoria_ibfk_1` FOREIGN KEY (`id_despacho`) REFERENCES `despacho` (`id_despacho`);
 
 --
 -- Filtros para la tabla `despacho_fecha`
 --
 ALTER TABLE `despacho_fecha`
   ADD CONSTRAINT `fk_fecha_despacho` FOREIGN KEY (`id_despacho`) REFERENCES `despacho` (`id_despacho`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `despacho_info`
+--
+ALTER TABLE `despacho_info`
+  ADD CONSTRAINT `fk_descripcion_despacho` FOREIGN KEY (`id_despacho`) REFERENCES `despacho` (`id_despacho`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `despacho_invalido`

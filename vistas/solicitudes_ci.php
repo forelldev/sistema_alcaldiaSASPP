@@ -22,7 +22,7 @@
                 <?php foreach ($datos as $fila): ?>
                     <div class="solicitud-card">
                         <div class="solicitud-header">
-                            <span class="solicitud-estado"
+                            <span class="solicitud-estado
                                 <?php
                                     $estado = htmlspecialchars($fila['estado'] ?? '');
                                     if ($estado == 'En espera del documento físico para ser procesado 0/3') echo 'pendiente';
@@ -62,7 +62,7 @@
         <input type="submit" value="Registrar Solicitud">
         <input type="hidden" name="ci" value="<?= $ci ?>">
     </form>
-    <a href="<?=BASE_URL?>/">Volver (No registrar)</a>
+    <a href="<?=BASE_URL?>/busqueda">Volver (No registrar)</a>
 </body>
 <script src="<?= BASE_URL ?>/public/js/notificacionAdministrador.js"></script>
 </html>

@@ -9,7 +9,7 @@ Router::get('/logout','LoginControl@logout'); //RUTA PARA DESLOGEARSE, SALIR
 Router::get('/validar-sesion', 'LoginControl@validarSesionAjax'); //RUTA PARA VALIDAR SESIÓN (EN CONJUNTO CON JAVASCRIPT)
 Router::get('/noti', 'LoginControl@solicitud_notificacion'); 
 Router::get('/marcar_vistas', 'LoginControl@marcar_vistas');
-Router::get('/marcar_vistasDespacho', 'LoginControl@marcar_vistasDespacho'); 
+Router::get('/marcar_vistasDespacho', 'LoginControl@marcar_vistasDespacho');
 Router::get('/solicitudes_list','SolicitudControl@lista'); //RUTA PARA LA VISTA DE SOLICITUDES_LIST Y A LA MISMA VEZ MOSTRAR LA TABLA SOLICITUD_AYUDA
 Router::get('/busqueda','SolicitudControl@busquedaVista'); //RUTA PARA BUSQUEDA VISTA, PARA LA CEDULA ANTES DE RELLENAR FORMULARIO
 Router::post('/formulario','SolicitudControl@buscar'); // RUTA PARA FUNCIÓN DE BUSCAR CEDULA EN TABLA SOLICITANTE
@@ -77,5 +77,11 @@ Router::get('/editarDesarrollo','DesarrolloControl@editar');
 Router::post('/editar_desarrollo','DesarrolloControl@editar_solicitud');
 Router::get('/filtrar_desarrollo','DesarrolloControl@filtrar_desarrollo');
 Router::get('/mostrar_noti_urgencia','DesarrolloControl@mostrar_noti_urgencia');
+Router::get('/casos_lista', 'AtencionControl@casos_lista');
+Router::get('/casos_ci_busqueda', 'AtencionControl@casos_ci_busqueda');
+Router::post('/casos_formulario', 'AtencionControl@casos_formulario');
+Router::post('/casos_enviar', 'AtencionControl@casos_enviar');
+Router::get('/felicidades_casos', 'AtencionControl@felicidades_casos');
+Router::post('/casos_anteriores', 'AtencionControl@casos_anteriores');
 
 ?>
