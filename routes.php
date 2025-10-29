@@ -88,6 +88,8 @@ Router::get('/generar_solicitud', 'AtencionControl@generar_solicitud');
 Router::get('/marcar_vistas_new', 'AtencionControl@marcar_vistas_new');
 Router::get('/noti_caso', 'AtencionControl@atender_caso');
 Router::get('/felicidades_despacho', 'DespachoControl@felicidades_despacho');
+Router::post('/caso_continuar','AtencionControl@caso_continuar');
+Router::get('/felicidades_caso_continuado','AtencionControl@felicidades_caso_continuado');
 
 
 ?>

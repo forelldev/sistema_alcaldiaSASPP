@@ -45,7 +45,7 @@
                         <div><strong>Dirección a la que se dirige:</strong> <?= htmlspecialchars($fila['direccion'] ?? '') ?></div>
                     </div>
                     <div class="solicitud-actions">
-                        <a href="<?= BASE_URL ?>/generar_solicitud?id_caso=<?= $fila['id_caso']?>&&direccion=<?= $fila['direccion'] ?>&&categoria=<?= $fila['categoria'] ?>&&ci=<?= $fila['ci'] ?>" class="aprobar-btn">Generar Solicitud</a>
+                        <a href="<?= BASE_URL ?>/generar_solicitud?id_caso=<?= $fila['id_caso']?>&&direccion=<?= $fila['direccion'] ?>&&ci=<?= $fila['ci'] ?>" class="aprobar-btn">Continuar Caso</a>
                         <?php if($fila['estado'] == 'Sin Atender'){ ?>
                         <?php if ($_SESSION['id_rol'] == 0 || $_SESSION['id_rol'] == 4): ?>
                             <a href="<?= BASE_URL.'/editar?id_caso='.$fila['id_caso'] ?>" class="aprobar-btn">Editar</a>

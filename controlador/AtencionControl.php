@@ -93,7 +93,6 @@ class AtencionControl {
             $_POST['fecha'] = date('Y-m-d H:i:s');
             $_POST['ci_user'] = $_SESSION['ci'];
             $_POST['estado'] = 'Sin Atender';
-            $_POST['descripcion'] = 'Solicitud de '.$_POST['tipo_ayuda'].' para '.$_POST['nombre']. ' '.$_POST['apellido'].' en oficina de '.$_POST['direccion'];
             $resultado = AtencionModelo::registrar_caso($_POST);
             if ($resultado['exito']) {
                 $accion = 'Creó un nuevo caso.';
@@ -141,24 +140,16 @@ class AtencionControl {
     }
 
     public static function generar_solicitud(){
-        if(isset($_GET['id_caso']) && isset($_GET['direccion']) && isset($_GET['categoria']) && isset($_GET['ci'])){
+        if(isset($_GET['id_caso']) && isset($_GET['direccion']) && isset($_GET['ci'])){
             $id_caso = $_GET['id_caso'];
             $direccion = $_GET['direccion'];
-            $categoria = $_GET['categoria'];
             $ci = $_GET['ci'];
             switch($direccion){
                 case 'Desarrollo Social':
-                    if($categoria == 'Ayuda Económica'){
-                        $msj = 'Rellena el estudio socioeconómico! (Se han cargado datos del solicitante)';
                         $data = self::obtenerDatosBeneficiario($ci);
                         extract($data); // crea $data_exists, $datos_beneficiario, etc.
-                        require_once 'vistas/solicitud_formulario_cargado.php';
-                        exit;
-                    }
-                    else{
                         require_once 'vistas/solicitudes_desarrollo_formulario.php';
-                    }
-                break;
+                        break;
                 case 'Despacho':
                     $msj = 'Rellene el formulario! (Se han cargado datos del solicitante)';
                     $data = self::obtenerDatosBeneficiario($ci);
@@ -200,6 +191,33 @@ class AtencionControl {
         }
 
         require_once 'vistas/casos_lista.php';
+    }
+
+    public static function caso_continuar(){
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST)) {
+            $direccion = $_POST['direccion'];
+                switch($direccion){
+                    case 'Desarrollo Social':
+                        $res = AtencionModelo::caso_continuar($_POST);
+                        if($res['exito']){
+                            header("Location: ".BASE_URL."/felicidades_caso_continuado");
+                        }
+                        else{
+                            $msj = 'Ocurrió un error';
+                            require_once 'solicitudes_desarrollo_formulario.php';
+                        }
+                        break;
+                }
+
+        }
+        else{
+            $msj = 'Ocurrio un error (POST), Intenta volver a enviar la solicitud';
+            require_once 'vistas/solicitudes_desarrollo_formulario.php';
+        }
+    }
+
+    public static function felicidades_caso_continuado(){
+        require_once 'vistas/felicidades_caso_continuado.php';
     }
 
 }

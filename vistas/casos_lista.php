@@ -22,44 +22,6 @@
       </div>
   </header>
     <main>
-    <section class="filtros-card">
-        <form class="filtros-form" action="filtrar_fecha" method="POST">
-            <label>
-                Desde
-                <input type="date" name="fecha_inicio" value="<?php echo isset($fecha_inicio) ? $fecha_inicio : ''; ?>" required>
-            </label>
-            <label>
-                Hasta
-                <input type="date" name="fecha_final" value="<?php echo isset($fecha_final) ? $fecha_final : ''; ?>" required>
-            </label>
-            <label>
-                Seleccione un Estado:
-                <select name="estado" required>
-                    <option value="">Seleccione</option>
-                    <option value="Sin Atender" <?= ($estado ?? '') == 'Sin Atender' ? 'selected' : '' ?>>Sin Atender</option>
-                    <option value="Atendido" <?= ($estado ?? '') == 'Atendido' ? 'selected' : '' ?>>Atendidas</option>
-                </select>
-            </label>
-            <button type="submit" name="btn_filtro" value="Filtrar" class="filtrar-btn">
-                <i class="fa fa-filter"></i> <span>Filtrar</span>
-            </button>
-        </form>
-    </section>
-    <nav class="filtros-categorias">
-        <a href="<?= BASE_URL ?>/filtrar_caso?filtro=recientes" class="filtro-btn">
-            <i class="fa fa-clock"></i> Más recientes
-        </a>
-        <a href="<?= BASE_URL ?>/filtrar_caso?filtro=antiguos" class="filtro-btn">
-            <i class="fa fa-history"></i> Más antiguos
-        </a>
-        <a href="<?= BASE_URL ?>/filtrar_caso?filtro=sin_atender" class="filtro-btn">
-            <i class="fa fa-hourglass-start"></i> Sin atender
-        </a>
-        <a href="<?= BASE_URL ?>/filtrar_caso?filtro=atendidos" class="filtro-btn">
-            <i class="fa fa-check-circle"></i> Atendidos
-        </a>
-    </nav>
-
     <section class="solicitudes-lista">
         <?php if (!empty($datos)): ?>
             <?php foreach ($datos as $fila): ?>
@@ -83,14 +45,12 @@
                         <div><strong>Hora:</strong> <?= htmlspecialchars(date('g:i A', strtotime($fila['fecha']))) ?></div>
                     </div>
                     <div class="solicitud-info">
-                        <div><strong>Resumen:</strong> <?= htmlspecialchars($fila['descripcion']) ?></div>
-                        <div><strong>Número de documento:</strong> <?= htmlspecialchars($fila['id_manual'] ?? '') ?></div>
+                        <div><strong>Descripción:</strong> <?= htmlspecialchars($fila['descripcion']) ?></div>
+                        <div><strong>Número de documento:</strong> <?= htmlspecialchars($fila['id_caso'] ?? '') ?></div>
                         <div><strong>Cédula del Beneficiario:</strong> <?= htmlspecialchars($fila['ci'] ?? '') ?></div>
                         <div><strong>Remitente:</strong> <?= htmlspecialchars(($fila['nombre'] ?? '') . ' ' . ($fila['apellido'] ?? ''))?></div>
                         <div><strong>Creador del caso:</strong> <?= htmlspecialchars($fila['creador'] ?? '') ?></div>
                         <div><strong>Dirección a la que se dirige:</strong> <?= htmlspecialchars($fila['direccion'] ?? '') ?></div>
-                        <div><strong>Categoría:</strong> <?= htmlspecialchars($fila['categoria'] ?? '') ?></div>
-                        <div><strong>Tipo de ayuda:</strong> <?= htmlspecialchars($fila['tipo_ayuda'] ?? '') ?></div>
                         </div>
                         
                     <div class="solicitud-actions">

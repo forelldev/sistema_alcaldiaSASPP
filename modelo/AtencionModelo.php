@@ -186,7 +186,7 @@ class AtencionModelo{
             //     $data['prioridad'] = 'Baja';
             // }
             // Validar campos obligatorios
-            $camposObligatorios = ['id_manual', 'ci', 'descripcion', 'fecha', 'ci_user', 
+            $camposObligatorios = [ 'ci', 'descripcion', 'fecha', 'ci_user', 
             'nombre', 'apellido', 'correo', 'estado'];
 
             foreach ($camposObligatorios as $campo) {
@@ -214,14 +214,14 @@ class AtencionModelo{
                 }
 
 
-            // Verificar si el id_manual ya existe en casos
-            $checkStmt = $db->prepare("SELECT COUNT(*) FROM casos WHERE id_manual = :id_manual");
-            $checkStmt->execute([':id_manual' => $data['id_manual']]);
-            $exists = $checkStmt->fetchColumn();
+            // Verificar si el id ya existe en casos
+            // $checkStmt = $db->prepare("SELECT COUNT(*) FROM casos WHERE id = :id");
+            // $checkStmt->execute([':id' => $data['id']]);
+            // $exists = $checkStmt->fetchColumn();
 
-            if ($exists > 0) {
-                throw new Exception("❌ El número de documento ya está registrado.");
-            }
+            // if ($exists > 0) {
+            //     throw new Exception("❌ El número de documento ya está registrado.");
+            // }
 
 
             // Obtener datos del promotor
@@ -238,13 +238,12 @@ class AtencionModelo{
             // Insertar en tabla casos
             $stmt = $db->prepare("
                 INSERT INTO casos (
-                    id_manual, ci, estado, direccion
+                    ci, estado, direccion
                 ) VALUES (
-                    :id_manual, :ci, :estado, :direccion
+                    :ci, :estado, :direccion
                 )
             ");
             $stmt->execute([
-                ':id_manual' => $data['id_manual'],
                 ':ci' => $data['ci'],
                 ':estado' => $data['estado'],
                 ':direccion' => $data['direccion']
@@ -287,11 +286,14 @@ class AtencionModelo{
                     :id_caso, :tipo_ayuda, :categoria
                 )
             ");
+
             $stmt->execute([
                 ':id_caso' => $id_caso,
-                ':tipo_ayuda' => $data['tipo_ayuda'],
-                ':categoria' => $data['categoria']
+                ':tipo_ayuda' => 'Sin Registrar',
+                ':categoria' => 'Sin Registrar'
             ]);
+
+            
 
             $db->commit();
 
@@ -461,6 +463,43 @@ class AtencionModelo{
                 ':id_caso' => $id_caso
             ]);
     }
+
+    public static function caso_continuar($data) {
+    try {
+        $conexion = DB::conectar();
+
+        // Validar campos obligatorios
+        if (empty($data['id_caso'])) {
+            throw new Exception("Falta el ID del caso.");
+        }
+        if (empty($data['categoria'])) {
+            throw new Exception("Falta la categoría.");
+        }
+
+        // Actualizar la categoría en la tabla casos_categoria
+        $sqlCategoria = "UPDATE casos_categoria SET categoria = :categoria WHERE id_caso = :id_caso";
+        $stmtCategoria = $conexion->prepare($sqlCategoria);
+        $stmtCategoria->execute([
+            ':categoria' => $data['categoria'],
+            ':id_caso' => $data['id_caso']
+        ]);
+
+        // (Opcional) Actualizar estado del caso en tabla principal
+        $sqlEstado = "UPDATE casos SET estado = 'En Proceso', fecha_modificacion = NOW() WHERE id_caso = :id_caso";
+        $stmtEstado = $conexion->prepare($sqlEstado);
+        $stmtEstado->execute([
+            ':id_caso' => $data['id_caso']
+        ]);
+
+        return ['exito' => true];
+
+    } catch (Exception $e) {
+        error_log("Error al continuar caso: " . $e->getMessage());
+        return ['exito' => false, 'error' => $e->getMessage()];
+    }
+}
+
+
 
 
     }

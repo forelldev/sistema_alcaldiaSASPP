@@ -238,7 +238,7 @@ class Desarrollo {
                 VALUES (:id_manual, :ci, 'En espera del documento físico para ser procesado 0/2', 0)");
             $insertSD->execute([
                 ':id_manual' => $data['id_manual'],
-                ':ci' => $data['ci']
+                ':ci' => $data['ci'],
             ]);
             $id_des = $db->lastInsertId();
 
@@ -290,7 +290,7 @@ class Desarrollo {
 
             // Insertar en solicitud_fecha
             $insertFecha = $db->prepare("INSERT INTO solicitud_desarrollo_fecha 
-                (id_des, fecha, fecha_modificacion, visto) 
+                (id_des, fecha, fecha_modificacion,fecha_renovacion, visto) 
                 VALUES (:id_des, :fecha, :fecha_modificacion, :fecha_renovacion, 0)");
             $insertFecha->execute([
                 ':id_des' => $id_des,

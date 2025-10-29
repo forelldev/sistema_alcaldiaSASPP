@@ -44,16 +44,16 @@
 
       <div class="titulo-seccion"><i class="fa fa-file-alt"></i> Datos del Caso</div>
       <div class="fila-formulario">
-        <label for="id_manual">Número de documento:</label>
-        <input type="text" name="id_manual" id="id_manual" placeholder="Ingrese el número de documento" required>
 
         <label for="direccion" id="label-direccion">Oficina a la que se dirige:</label>
         <select name="direccion" id="direccion" required>
-          <option value="">Seleccione</option>
+          <option value="">Seleccione</option> 
           <!-- Rellenar dinamicamente -->
         </select>
 
-       <div id="campos-dinamicos"></div>
+       <!-- <div id="campos-dinamicos"></div> -->
+        <label for="descripcion">Descripción del Caso:</label>
+        <input type="text" name="descripcion" id="descripcion">
       </div>
 
       <div class="form-boton-contenedor">

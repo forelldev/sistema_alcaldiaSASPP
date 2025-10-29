@@ -98,8 +98,6 @@
                 <a href="<?= BASE_URL.'/solicitudes_desarrollo'?>"><i class="fas fa-folder-open"></i> Lista de Solicitudes de Oficina Desarrollo Social</a>
             <?php } else if (!$_SESSION['id_rol'] == 0){ ?>
                 <a href="<?= BASE_URL.'/'.$direccion?>"><i class="fas fa-folder-open"></i> Lista de Solicitudes de Oficina (<?= $_SESSION['rol']; ?>)</a>
-            <?php } if($_SESSION['id_rol'] == 1 || $_SESSION['id_rol'] == 4){ ?>
-            <a href="<?= BASE_URL ?>/constancias"><i class="fas fa-file-alt"></i> Constancias</a>
             <?php } ?>
         </div>
     </div>
