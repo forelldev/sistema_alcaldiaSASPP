@@ -20,7 +20,7 @@ $acciones = [
     <header class="header">
         <div class="titulo-header">Solicitudes internas de despacho</div>
         <div class="header-right">
-            <a href="<?=BASE_URL?>/despacho_busqueda"><button class="nav-btn principal-btn"><i class="fa fa-plus"></i> Rellenar Formulario</button></a>
+            <a href="<?=BASE_URL?>/casos_lista"><button class="principal-btn"><i class="fa fa-plus"></i> Ver Casos Por Atender</button></a>
             <a href="<?=BASE_URL?>/main"><button class="nav-btn"><i class="fa fa-arrow-left"></i> Volver atrás</button></a>
             <a href="<?=BASE_URL?>/inhabilitados_despacho"><button class="nav-btn"><i class="fa fa-eye-slash"></i> Ver Solicitudes Inhabilitadas (Despacho)</button></a>
         </div>
@@ -56,13 +56,16 @@ $acciones = [
                             <div><strong>Remitente:</strong> <?= htmlspecialchars(($fila['nombre'] ?? '') . ' ' . ($fila['apellido'] ?? ''))?></div>
                         </div>
                         <div class="solicitud-actions">
+                            <a href="<?= BASE_URL ?>/solicitud_informada" class="aprobar-btn">Dar Solicitud Por Informada</a>
+                            <?php if($_SESSION['id_rol'] == 2 || $_SESSION['id_rol'] == 4 && $estado == 'Informada'){?>
+                                <a href="<?=BASE_URL?>/solicitud_aprobada" class="aprobar-btn">Aprobar Solicitud</a>
+                                <a href="<?=BASE_URL?>/solicitud_negada" class="aprobar-btn">Negar Solicitud</a>
+                                <a href="<?=BASE_URL?>/solicitud_diferida" class="aprobar-btn">Diferir Solicitud</a>
+                            <?php } ?>
                             <a href="<?= BASE_URL ?>/informacion_beneficiario?ci=<?= $fila['ci']?>" class="aprobar-btn">Ver Información del beneficiario</a>
                             <?php if($estado == 'En Revisión 1/2' || $estado == 'Solicitud Finalizada (Ayuda Entregada)'){ ?>
                             <a href="<?= BASE_URL.'/editarDespacho?id_despacho='.$fila['id_despacho']  ?>" class="aprobar-btn">Editar</a>
                             <a href="<?= BASE_URL.'/inhabilitarDespacho?id_despacho='.$fila['id_despacho'] ?>" class="rechazar-btn">Inhabilitar</a>
-                                <a href="<?= BASE_URL.'/procesarDespacho?id_despacho='.$fila['id_despacho'].'&estado='.$fila['estado'] ?>" class="aprobar-btn">
-                                    <?= $accion = isset($acciones[$fila['estado']]) ? $acciones[$fila['estado']] : 'Acción desconocida'; ?>
-                                </a>
                             <?php } ?>
                         </div>
                     </div>

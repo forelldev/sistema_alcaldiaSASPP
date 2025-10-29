@@ -8,16 +8,16 @@
     <link rel="stylesheet" href="<?= BASE_URL ?>../css/solicitud.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="<?= BASE_URL ?>../css/registro.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="<?= BASE_URL ?>../css/style.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/new_style.css?v=<?php echo time(); ?>">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="body-main">
     <header class="header">
         <div class="titulo-header">Antecedentes de Casos</div>
       <a href="<?= BASE_URL ?>/casos_ci_busqueda"><button class="nav-btn"><i class="fa fa-arrow-left"></i> Volver atrás</button></a>
       </div>
   </header>
     <section class="solicitudes-lista">
-    <h1 class="mensaje"><?= isset($msj) ? htmlspecialchars($msj) : '' ?></h1>
     <?php if (!empty($datos)): ?>
                 <?php foreach ($datos as $fila): ?>
                     <div class="solicitud-card">
@@ -52,14 +52,20 @@
                 </div>
             <?php endif; ?>
         </section>
-    <form action="casos_anteriores" method="POST">
-        <input type="submit" value="Registrar Solicitud">
-        <input type="hidden" name="ci" value="<?= $ci ?>">
-    </form>
-    <a href="<?=BASE_URL?>/busqueda">Volver (No registrar)</a>
+    <div class="form-anteriores">
+        <form action="casos_anteriores" method="POST">
+            <input type="hidden" name="ci" value="<?= $ci ?>">
+            <input type="submit" value="Registrar Caso" class="btn-principal">
+        </form>
+        <a href="<?=BASE_URL?>/busqueda" class="enlace-volver">Volver (No registrar)</a>
+    </div>
 </body>
+<script src="<?= BASE_URL ?>/public/js/msj.js"></script>
 <script>
     const BASE_PATH = "<?php echo BASE_PATH; ?>";
+    <?php if (isset($msj)):?> 
+        mostrarMensaje("<?= htmlspecialchars($msj) ?>", "info", 6500);
+    <?php endif; ?>
 </script>
 <script src="<?= BASE_URL ?>/public/js/sesionReload.js"></script>
 <script src="<?= BASE_URL ?>/public/js/validarSesion.js"></script>

@@ -1,39 +1,53 @@
 <?php 
 require_once 'conexiondb.php';
 class AtencionModelo{
-    public static function mostrar_casos() {
+    public static function mostrar_casos($direccion) {
         try {
             $conexion = DB::conectar();
-            $consulta = $conexion->prepare("
-                SELECT c.*, ci.*,cf.*,cc.*, sol.*
-                FROM casos c 
-                LEFT JOIN casos_info ci ON c.id_caso = ci.id_caso
-                LEFT JOIN casos_fecha cf ON c.id_caso = cf.id_caso
-                LEFT JOIN casos_categoria cc ON c.id_caso = cc.id_caso
-                LEFT JOIN solicitantes sol ON c.ci = sol.ci
-                ORDER BY (c.estado = 'Sin Atender') DESC, c.id_caso DESC
-            ");
-            $consulta->execute();
+
+            // Si la dirección es "Todos", no se filtra por dirección
+            if ($direccion === 'Todos') {
+                $sql = "
+                    SELECT c.*, ci.*, cf.*, cc.*, sol.*
+                    FROM casos c 
+                    LEFT JOIN casos_info ci ON c.id_caso = ci.id_caso
+                    LEFT JOIN casos_fecha cf ON c.id_caso = cf.id_caso
+                    LEFT JOIN casos_categoria cc ON c.id_caso = cc.id_caso
+                    LEFT JOIN solicitantes sol ON c.ci = sol.ci
+                    ORDER BY (c.estado = 'Sin Atender') DESC, c.id_caso DESC
+                ";
+                $consulta = $conexion->prepare($sql);
+                $consulta->execute();
+            } else {
+                $sql = "
+                    SELECT c.*, ci.*, cf.*, cc.*, sol.*
+                    FROM casos c 
+                    LEFT JOIN casos_info ci ON c.id_caso = ci.id_caso
+                    LEFT JOIN casos_fecha cf ON c.id_caso = cf.id_caso
+                    LEFT JOIN casos_categoria cc ON c.id_caso = cc.id_caso
+                    LEFT JOIN solicitantes sol ON c.ci = sol.ci
+                    WHERE c.direccion = :direccion
+                    ORDER BY (c.estado = 'Sin Atender') DESC, c.id_caso DESC
+                ";
+                $consulta = $conexion->prepare($sql);
+                $consulta->bindParam(':direccion', $direccion, PDO::PARAM_STR);
+                $consulta->execute();
+            }
+
             $datos = $consulta->fetchAll(PDO::FETCH_ASSOC);
 
-            if (!empty($datos)) {
-                return [
-                    'exito' => true,
-                    'datos' => $datos
-                ];
-            } else {
-                return [
-                    'exito' => false,
-                    'error' => 'No se encontraron casos.'
-                ];
-            }
-        } catch (Exception $e) {
+            return !empty($datos)
+                ? ['exito' => true, 'datos' => $datos]
+                : ['exito' => false, 'error' => 'No se encontraron casos.'];
+
+        } catch (PDOException $e) {
             return [
                 'exito' => false,
                 'error' => 'Error en la consulta: ' . $e->getMessage()
             ];
         }
     }
+
 
 
     public static function cargar_datos($ci){
@@ -116,6 +130,14 @@ class AtencionModelo{
     }
 
      public static function verificar_solicitante($ci) {
+    // Validar que el CI no esté vacío
+        if (empty($ci)) {
+            return [
+                'exito' => false,
+                'error' => 'La cédula no puede estar vacía.'
+            ];
+        }
+
         try {
             $conexion = DB::conectar();
             $consulta = "SELECT s.*, sc.*, sco.*, se.*, si.*, sin.*, sp.*, st.*
@@ -134,6 +156,14 @@ class AtencionModelo{
             $stmt->execute();
             $datos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+            // Validar si se encontraron datos
+            if (!$datos || count($datos) === 0) {
+                return [
+                    'exito' => false,
+                    'error' => 'No se encontró ningún solicitante con esa cédula.'
+                ];
+            }
+
             return [
                 'exito' => true,
                 'datos' => $datos
@@ -141,10 +171,11 @@ class AtencionModelo{
         } catch (PDOException $e) {
             return [
                 'exito' => false,
-                'error' => $e->getMessage()
+                'error' => 'Error de conexión: ' . $e->getMessage()
             ];
         }
     }
+
 
     public static function registrar_caso($data){
         $db = DB::conectar();
@@ -277,6 +308,161 @@ class AtencionModelo{
             ];
         }
         }
-    
-}
+    public static function datos_caso($id_caso) {
+        try {
+            $conexion = DB::conectar();
+            $consulta = $conexion->prepare("
+                SELECT c.*, ci.*, cf.*, cc.*, sol.*
+                FROM casos c 
+                LEFT JOIN casos_info ci ON c.id_caso = ci.id_caso
+                LEFT JOIN casos_fecha cf ON c.id_caso = cf.id_caso
+                LEFT JOIN casos_categoria cc ON c.id_caso = cc.id_caso
+                LEFT JOIN solicitantes sol ON c.ci = sol.ci
+                WHERE c.id_caso = :id_caso
+            ");
+            $consulta->bindParam(':id_caso', $id_caso, PDO::PARAM_STR);
+            $consulta->execute();
+            $datos = $consulta->fetchAll(PDO::FETCH_ASSOC);
+
+            if ($datos && count($datos) > 0) {
+                return [
+                    'exito' => true,
+                    'datos' => $datos
+                ];
+            } else {
+                return [
+                    'exito' => false,
+                    'error' => 'No se encontraron casos.'
+                ];
+            }
+        } catch (PDOException $e) {
+            return [
+                'exito' => false,
+                'error' => 'Error en la consulta: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    public static function marcar_vistas() {
+        try {
+            $conexion = DB::conectar();
+            $consulta = "UPDATE casos_fecha SET visto = 1 WHERE visto = 0";
+            $busqueda = $conexion->prepare($consulta);
+
+            if ($busqueda->execute()) {
+                $filas_afectadas = $busqueda->rowCount();
+
+                if ($filas_afectadas > 0) {
+                    return [
+                        'exito' => true,
+                        'datos' => ['filas_actualizadas' => $filas_afectadas]
+                    ];
+                } else {
+                    return [
+                        'exito' => false,
+                        'mensaje' => 'No hay vistas por marcar'
+                    ];
+                }
+            } else {
+                return [
+                    'exito' => false,
+                    'mensaje' => 'Ocurrió un error realizando la actualización'
+                ];
+            }
+        } catch (PDOException $e) {
+            return [
+                'exito' => false,
+                'mensaje' => 'Error en la consulta: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    public static function filtrar_caso($filtro) {
+        try {
+            $conexion = DB::conectar();
+
+            $baseQuery = "
+                SELECT 
+                    sa.*, 
+                    saf.*,
+                    sac.*,
+                    sc.*,
+                    sd.*,
+                    sol.nombre AS nombre,
+                    sol.apellido AS apellido
+                FROM solicitud_ayuda sa
+                LEFT JOIN solicitud_ayuda_fecha saf ON sa.id_doc = saf.id_doc
+                LEFT JOIN solicitud_ayuda_correo sac ON sa.id_doc = sac.id_doc
+                LEFT JOIN solicitud_categoria sc ON sa.id_doc = sc.id_doc
+                LEFT JOIN solicitud_descripcion sd ON sa.id_doc = sd.id_doc
+                LEFT JOIN solicitantes sol ON sa.ci = sol.ci
+                WHERE sa.invalido = 0
+            ";
+
+            $order = "DESC";
+            $categoria = null;
+            $estado = null;
+
+            switch ($filtro) {
+                case "economica":
+                    $categoria = "Economica";
+                    break;
+                case "otros":
+                    $categoria = "Otros";
+                    break;
+                case "sin_atender":
+                    $estado = "Sin Atender";
+                    break;
+                case "atendidos":
+                    $estado = "Atendido";
+                    break;
+                case "antiguos":
+                    $order = "ASC";
+                    break;
+                case "recientes":
+                default:
+                    // No se modifica categoría ni orden
+                    break;
+            }
+
+            if ($categoria !== null) {
+                $baseQuery .= " AND sc.categoria = :categoria";
+            }
+
+            if ($estado !== null) {
+                $baseQuery .= " AND sa.estado = :estado";
+            }
+
+            $baseQuery .= " ORDER BY saf.fecha $order";
+
+            $stmt = $conexion->prepare($baseQuery);
+
+            if ($categoria !== null) {
+                $stmt->bindParam(':categoria', $categoria, PDO::PARAM_STR);
+            }
+
+            if ($estado !== null) {
+                $stmt->bindParam(':estado', $estado, PDO::PARAM_STR);
+            }
+
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            error_log("Error al filtrar solicitud: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    public static function marcar_visto_caso($id_caso){
+        $db = DB::conectar();
+        $marcar_visto = $db->prepare("UPDATE casos_fecha SET visto = 1 WHERE id_caso = :id_caso");
+        $marcar_visto->execute([
+                ':id_caso' => $id_caso
+            ]);
+    }
+
+
+    }
+
 ?>

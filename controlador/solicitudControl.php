@@ -137,11 +137,11 @@ class SolicitudControl {
             $id_doc = $_GET['id_doc'];
             $estado = $_GET['estado'];
             switch($estado){
-                case 'En espera del documento físico para ser procesado 0/3':
-                    $estado_new = 'En Proceso 1/3';
-                    $accion = 'Recibió documento físico, y aprobó para su procedimiento.';
+                case 'En Revisión 1/3':
+                    $estado_new = '';
+                    $accion = 'Terminó la revisión de la solicitud y la ha enviado a despacho';
                     break;
-                case 'En Proceso 1/3':
+                case 'En Revisión 1/3':
                     $estado_new = 'En Proceso 2/3';
                     $accion = 'Envió la solicitud a despacho.';
                     break;

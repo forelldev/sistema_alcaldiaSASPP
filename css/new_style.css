@@ -1,0 +1,239 @@
+.formulario-ayuda {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.form-titulo {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+.titulo-seccion {
+  font-size: 18px;
+  margin: 30px 0 15px;
+  font-weight: bold;
+  color: #007bff;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 5px;
+}
+
+.fila-formulario {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.fila-formulario label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #444;
+}
+
+.fila-formulario input,
+.fila-formulario select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  background-color: #f9f9f9;
+}
+
+.fila-formulario input:focus,
+.fila-formulario select:focus {
+  outline: none;
+  border-color: #007bff;
+  background-color: #fff;
+}
+
+.form-boton-contenedor {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.btn-principal {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.campo-dinamico {
+  grid-column: span 2;
+  margin-top: 20px;
+}
+
+.campo-dinamico label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+.campo-dinamico select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  background-color: #f9f9f9;
+}
+
+.campo-dinamico input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+.campo-dinamico label input[type="checkbox"] {
+  margin-right: 6px;
+}
+
+.campo-dinamico label:not(:first-child) {
+  margin-top: 6px;
+}
+
+/* Contenedor general del campo dinámico */
+.campo-dinamico {
+  grid-column: span 2;
+  margin-top: 20px;
+}
+
+/* Etiqueta principal */
+.campo-dinamico > label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+/* Grupo de opciones */
+.campo-dinamico .checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Cada opción */
+.campo-dinamico .checkbox-option {
+  display: flex;
+  align-items: center;
+  background-color: #f1f1f1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.campo-dinamico .checkbox-option:hover {
+  background-color: #e0e0e0;
+}
+
+/* Ocultar el checkbox nativo */
+.campo-dinamico .checkbox-option input[type="checkbox"] {
+  margin-right: 8px;
+  accent-color: #007bff;
+  transform: scale(1.2);
+}
+
+/* Contenedor general del grupo de checkboxes */
+.grupo-checkbox {
+  grid-column: span 2;
+  margin-top: 20px;
+  background-color: #f8f9fa;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Título del grupo */
+.grupo-titulo {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 12px;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Lista de checkboxes */
+.checkbox-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Cada checkbox */
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.checkbox-item:hover {
+  background-color: #e6f0ff;
+}
+
+/* Estilo del input */
+.checkbox-item input[type="checkbox"] {
+  margin-right: 8px;
+  accent-color: #007bff;
+  transform: scale(1.2);
+}
+
+.form-anteriores {
+  text-align: center;
+  margin-top: 40px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-anteriores form {
+  margin-bottom: 15px;
+}
+
+.btn-principal {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-principal:hover {
+  background-color: #0056b3;
+}
+
+.enlace-volver {
+  display: inline-block;
+  margin-top: 10px;
+  color: #555;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.enlace-volver:hover {
+  color: #007bff;
+}

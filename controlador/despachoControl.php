@@ -42,6 +42,7 @@
                 date_default_timezone_set('America/Caracas');
                 $fecha = date('Y-m-d H:i:s');
                 $accion = 'Registró solicitud de despacho';
+                $id_doc = $_POST['id_despacho'];
                 Procesar::registrarReporte($id_doc,$fecha,$accion,$_SESSION['ci']);
                 exit;
             } else {
@@ -82,6 +83,7 @@
                 header('Location: '.BASE_URL.'/despacho_list');
                 date_default_timezone_set('America/Caracas');
                 $fecha = date('Y-m-d H:i:s');
+                $id_doc = $id_despacho;
                 Procesar::registrarReporte($id_doc,$fecha,$accion,$_SESSION['ci']);
                 exit;
             }
@@ -172,6 +174,7 @@
                 date_default_timezone_set('America/Caracas');
                 $fecha = date('Y-m-d H:i:s');
                 $accion = 'Editó la solicitud de Despacho';
+                $id_doc = $_POST['id_despacho'];
                 Procesar::registrarReporte($id_doc,$fecha,$accion,$_SESSION['ci']);
             }
             else{
@@ -181,6 +184,10 @@
 
     public static function despacho_busqueda(){
         require_once 'vistas/despacho_busqueda.php';
+    }
+
+    public static function felicidades_despacho(){
+        require_once 'vistas/felicidadeS_despacho.php';
     }
         
     }

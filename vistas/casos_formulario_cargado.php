@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="<?= BASE_URL ?>../font/css/all.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="<?= BASE_URL ?>../css/solicitud.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="<?= BASE_URL ?>../css/reportes.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/new_style.css?v=<?php echo time(); ?>">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet">
 </head>
 <body class="solicitud-body">
@@ -20,58 +21,48 @@
   </header>
 
   <form action="<?= BASE_URL ?>/casos_enviar" method="POST" id="form_caso" class="formulario-ayuda">
-    <h2><i class="fa fa-folder-plus"></i> Nuevo Caso</h2>
+      <h2 class="form-titulo"><i class="fa fa-folder-plus"></i> Nuevo Caso</h2>
 
-    <div class="titulo-seccion"><i class="fa fa-user"></i> Datos del Solicitante</div>
-    <div class="fila-formulario">
+      <div class="titulo-seccion"><i class="fa fa-user"></i> Datos del Solicitante</div>
+      <div class="fila-formulario">
+        <label for="correo">Correo:</label>
+        <input type="email" name="correo" id="correo" placeholder="Ingrese su correo"
+          value="<?= htmlspecialchars($datos_beneficiario['solicitante']['correo'] ?? '') ?>" required>
 
-          <label for="correo">Correo:</label>
-      <input type="email" name="correo" id="correo" placeholder="Ingrese su correo"
-        value="<?= htmlspecialchars($datos_beneficiario['solicitante']['correo'] ?? '') ?>" required>
+        <label for="nombre">Nombre:</label>
+        <input type="text" name="nombre" id="nombre" placeholder="Nombre del solicitante"
+          value="<?= htmlspecialchars($datos_beneficiario['solicitante']['nombre'] ?? '') ?>" required>
 
-      <label for="nombre">Nombre:</label>
-      <input type="text" name="nombre" id="nombre" placeholder="Nombre del solicitante"
-        value="<?= htmlspecialchars($datos_beneficiario['solicitante']['nombre'] ?? '') ?>" required>
+        <label for="apellido">Apellido:</label>
+        <input type="text" name="apellido" id="apellido" placeholder="Apellido del solicitante"
+          value="<?= htmlspecialchars($datos_beneficiario['solicitante']['apellido'] ?? '') ?>" required>
 
-      <label for="apellido">Apellido:</label>
-      <input type="text" name="apellido" id="apellido" placeholder="Apellido del solicitante"
-        value="<?= htmlspecialchars($datos_beneficiario['solicitante']['apellido'] ?? '') ?>" required>
+        <label for="ci">Cédula:</label>
+        <input type="text" name="ci" id="ci" placeholder="Cédula"
+          value="<?= htmlspecialchars($datos_beneficiario['solicitante']['ci'] ?? '') ?>" required>
+      </div>
 
-      <label for="ci">Cédula:</label>
-      <input type="text" name="ci" id="ci" placeholder="Cédula"
-        value="<?= htmlspecialchars($datos_beneficiario['solicitante']['ci'] ?? '') ?>" required>
+      <div class="titulo-seccion"><i class="fa fa-file-alt"></i> Datos del Caso</div>
+      <div class="fila-formulario">
+        <label for="id_manual">Número de documento:</label>
+        <input type="text" name="id_manual" id="id_manual" placeholder="Ingrese el número de documento" required>
 
-        <div class="titulo-seccion"><i class="fa fa-user"></i> Datos del Caso</div>
+        <label for="direccion" id="label-direccion">Oficina a la que se dirige:</label>
+        <select name="direccion" id="direccion" required>
+          <option value="">Seleccione</option>
+          <!-- Rellenar dinamicamente -->
+        </select>
 
-      <label for="id_manual">Número de documento:</label>
-      <input type="text" name="id_manual" id="id_manual" placeholder="Ingrese el número de documento" required>
+       <div id="campos-dinamicos"></div>
+      </div>
 
-      <label for="direccion">Oficina a la que se dirige:</label>
-      <select name="direccion" id="direccion" required>
-        <option value="">Seleccione</option>
-        <option value="Desarrollo Social">Desarrollo Social</option>
-      </select>
+      <div class="form-boton-contenedor">
+        <input type="submit" value="Registrar Caso" class="btn-principal">
+      </div>
+    </form>
 
-      <label for="categoria">Categoría:</label>
-      <select name="categoria" id="categoria" required>
-        <option value="">Seleccione</option>
-        <!-- dinamicamente -->
-         <option value="Salud">Salud</option>
-         <option value="Enseres">Enseres</option>
-      </select>
-
-      <label for="tipo_ayuda">Tipo de ayuda:</label>
-      <select name="tipo_ayuda" id="tipo_ayuda" required>
-        <option value="">Seleccione</option>
-        <!-- dinamicamente -->
-         <option value="Medicamentos">Medicamentos</option>
-         <option value="Laboratorio">Laboratorio</option>
-      </select>
-      
-      <input type="submit" value="Registrar Caso">
-    </div>
-  </form>
 </body>
+<script src="<?= BASE_URL ?>/public/js/casos_formulario.js"></script>
 <script src="<?= BASE_URL ?>/public/js/msj.js"></script>
 <?php if (isset($msj)): ?>
         <script>

@@ -190,6 +190,9 @@ class Despacho{
                 self::insertarSolicitante($db, $id_solicitante, $data);
             }
 
+            $marcar_visto_caso = $db->prepare("UPDATE casos SET estado = 'Atendido' WHERE id_caso = :id_caso");
+            $marcar_visto_caso->execute([':id_caso' => $data['id_caso']]);
+
             $db->commit();
             return ['exito' => true];
 

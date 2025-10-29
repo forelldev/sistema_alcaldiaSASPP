@@ -12,10 +12,13 @@
 </head>
 <body class="solicitud-body">
     <header class="header">
-        <div class="titulo-header">Lista de Casos</div>
+        <div class="titulo-header">Lista de Casos Alcaldía(Oficina: <?= $_SESSION['rol']; ?>)</div>
         <div class="header-right">
-            <a href="<?=BASE_URL?>/casos_ci_busqueda"><button class="principal-btn"><i class="fa fa-plus"></i> Registrar Nuevo Caso</button></a>
+            <?php if($_SESSION['id_rol'] == 0 || $_SESSION['id_rol'] == 4){?>
+                <a href="<?=BASE_URL?>/casos_ci_busqueda"><button class="principal-btn"><i class="fa fa-plus"></i> Registrar Nuevo Caso</button></a>
+            <?php } ?>
       <a href="<?= BASE_URL ?>/main"><button class="nav-btn"><i class="fa fa-arrow-left"></i> Volver atrás</button></a>
+
       </div>
   </header>
     <main>
@@ -34,7 +37,7 @@
                 <select name="estado" required>
                     <option value="">Seleccione</option>
                     <option value="Sin Atender" <?= ($estado ?? '') == 'Sin Atender' ? 'selected' : '' ?>>Sin Atender</option>
-                    <option value="Atendidas" <?= ($estado ?? '') == 'Atendidas' ? 'selected' : '' ?>>Atendidas</option>
+                    <option value="Atendido" <?= ($estado ?? '') == 'Atendido' ? 'selected' : '' ?>>Atendidas</option>
                 </select>
             </label>
             <button type="submit" name="btn_filtro" value="Filtrar" class="filtrar-btn">
@@ -43,16 +46,16 @@
         </form>
     </section>
     <nav class="filtros-categorias">
-        <a href="<?= BASE_URL ?>/filtrar?filtro=recientes" class="filtro-btn">
+        <a href="<?= BASE_URL ?>/filtrar_caso?filtro=recientes" class="filtro-btn">
             <i class="fa fa-clock"></i> Más recientes
         </a>
-        <a href="<?= BASE_URL ?>/filtrar?filtro=antiguos" class="filtro-btn">
+        <a href="<?= BASE_URL ?>/filtrar_caso?filtro=antiguos" class="filtro-btn">
             <i class="fa fa-history"></i> Más antiguos
         </a>
-        <a href="<?= BASE_URL ?>/filtrar?filtro=sin_atender" class="filtro-btn">
+        <a href="<?= BASE_URL ?>/filtrar_caso?filtro=sin_atender" class="filtro-btn">
             <i class="fa fa-hourglass-start"></i> Sin atender
         </a>
-        <a href="<?= BASE_URL ?>/filtrar?filtro=atendidos" class="filtro-btn">
+        <a href="<?= BASE_URL ?>/filtrar_caso?filtro=atendidos" class="filtro-btn">
             <i class="fa fa-check-circle"></i> Atendidos
         </a>
     </nav>
@@ -70,7 +73,14 @@
                             ?>">
                             <?= $estado ?>
                         </span>
-                        <div><strong>Fecha:</strong> <?= htmlspecialchars(date('d-m-Y', strtotime($fila['fecha']))) ?></div>
+                        <div><strong>Fecha:</strong>
+                            <?php
+                                $fecha_caso = date('Y-m-d', strtotime($fila['fecha']));
+                                $hoy = date('Y-m-d');
+                            ?>
+                            <?= $fecha_caso === $hoy ? 'Hoy' : htmlspecialchars(date('d-m-Y', strtotime($fila['fecha']))) ?>
+                        </div>
+                        <div><strong>Hora:</strong> <?= htmlspecialchars(date('g:i A', strtotime($fila['fecha']))) ?></div>
                     </div>
                     <div class="solicitud-info">
                         <div><strong>Resumen:</strong> <?= htmlspecialchars($fila['descripcion']) ?></div>
@@ -79,9 +89,14 @@
                         <div><strong>Remitente:</strong> <?= htmlspecialchars(($fila['nombre'] ?? '') . ' ' . ($fila['apellido'] ?? ''))?></div>
                         <div><strong>Creador del caso:</strong> <?= htmlspecialchars($fila['creador'] ?? '') ?></div>
                         <div><strong>Dirección a la que se dirige:</strong> <?= htmlspecialchars($fila['direccion'] ?? '') ?></div>
-                    </div>
+                        <div><strong>Categoría:</strong> <?= htmlspecialchars($fila['categoria'] ?? '') ?></div>
+                        <div><strong>Tipo de ayuda:</strong> <?= htmlspecialchars($fila['tipo_ayuda'] ?? '') ?></div>
+                        </div>
+                        
                     <div class="solicitud-actions">
-                        <a href="<?= BASE_URL ?>/informacion_beneficiario?ci=<?= $fila['ci']?>" class="aprobar-btn">Ver Información del beneficiario</a>
+                        <?php if(!$_SESSION['id_rol'] == 0){ ?>
+                        <a href="<?= BASE_URL ?>/atender_caso?id_caso=<?= $fila['id_caso']?>" class="aprobar-btn">Atender Caso</a>
+                        <?php } ?>
                         <?php if($fila['estado'] == 'Sin Atender'){ ?>
                         <?php if ($_SESSION['id_rol'] == 0 || $_SESSION['id_rol'] == 4): ?>
                             <a href="<?= BASE_URL.'/editar?id_caso='.$fila['id_caso'] ?>" class="aprobar-btn">Editar</a>
@@ -103,8 +118,11 @@
     </section>
 </main>
 </body>
+<script src="<?= BASE_URL ?>/public/js/msj.js"></script>
 <script>
     const BASE_PATH = "<?php echo BASE_PATH; ?>";
+    <?php if (isset($msj)): ?> mostrarMensaje("<?= htmlspecialchars($msj) ?>", "info", 6500);
+            <?php endif; ?>
 </script>
 <script src="<?= BASE_URL ?>/public/js/sesionReload.js"></script>
 <script src="<?= BASE_URL ?>/public/js/validarSesion.js"></script>

@@ -23,7 +23,7 @@ $acciones = [
         <div class="titulo-header">Lista de solicitudes de Desarrollo Social</div>
         <div class="header-right">
          <?php if($_SESSION['id_rol'] == 1 || $_SESSION['id_rol'] == 4){?>
-            <a href="<?=BASE_URL?>/buscar_desarrollo"><button class="principal-btn"><i class="fa fa-plus"></i> Rellenar Formulario</button></a>
+            <a href="<?=BASE_URL?>/casos_lista"><button class="principal-btn"><i class="fa fa-plus"></i> Ver Casos Por Atender</button></a>
         <?php } ?>
         <?php if($_SESSION['id_rol'] == 1 || $_SESSION['id_rol'] == 4){?>
             <a href="<?=BASE_URL?>/desarrollo_invalidos"><button class="nav-btn"><i class="fa fa-eye-slash"></i> Ver Solicitudes Inhabilitadas</button></a>
@@ -157,16 +157,16 @@ $acciones = [
 
                     </div>
                     <div class="solicitud-actions">
+                        <a href="<?= BASE_URL.'/procesarDesarrollo?id_des='.$fila['id_des'].'&estado='.$fila['estado'] ?>" class="aprobar-btn">
+                            <?= isset($acciones[$fila['estado']]) ? $acciones[$fila['estado']] : 'Acción desconocida'; ?>
+                        </a>
                         <a href="<?= BASE_URL ?>/informacion_beneficiario?ci=<?= $fila['ci']?>" class="aprobar-btn">Ver Información del beneficiario</a>
-                        <?php if ($_SESSION['id_rol'] == 1 || $_SESSION['id_rol'] == 4): ?>
+                        <?php if ($_SESSION['id_rol'] == 1 || $_SESSION['id_rol'] == 4 && $estado == 'En espera del documento físico para ser procesado 0/2'): ?>
                         <a href="<?= BASE_URL.'/editarDesarrollo?id_des='.$fila['id_des'] ?>" class="aprobar-btn">Editar</a>
                         <?php endif; ?>
                         <?php if ($_SESSION['id_rol'] == 1 || $_SESSION['id_rol'] == 4): ?>
                             <a href="<?= BASE_URL.'/inhabilitarDesarrollo?id_des='.$fila['id_des'] ?>" class="rechazar-btn">Inhabilitar</a>
                         <?php endif; ?>
-                        <a href="<?= BASE_URL.'/procesarDesarrollo?id_des='.$fila['id_des'].'&estado='.$fila['estado'] ?>" class="aprobar-btn">
-                            <?= isset($acciones[$fila['estado']]) ? $acciones[$fila['estado']] : 'Acción desconocida'; ?>
-                        </a>
                     </div>
                 </div>
             <?php endforeach; ?>

@@ -12,13 +12,18 @@ const renderSubcategoria = (valor) => {
     campoExamen.style.display = 'block';
   } else if (valor === 'Exámenes de Laboratorio') {
     campoExamen.innerHTML = `
-      <label>Seleccione uno o más exámenes:</label><br>
-      <label><input type="checkbox" name="examen[]" value="Hematología Completa"> Hematología Completa</label><br>
-      <label><input type="checkbox" name="examen[]" value="Glicemia"> Glicemia</label><br>
-      <label><input type="checkbox" name="examen[]" value="Orina"> Orina</label><br>
-      <label><input type="checkbox" name="examen[]" value="Heces"> Heces</label><br>
-    `;
-    campoExamen.style.display = 'block';
+    <div class="grupo-checkbox">
+      <label class="grupo-titulo">Seleccione uno o más exámenes:</label>
+      <div class="checkbox-list">
+        <label class="checkbox-item"><input type="checkbox" name="examen[]" value="Hematología Completa"> Hematología Completa</label>
+        <label class="checkbox-item"><input type="checkbox" name="examen[]" value="Glicemia"> Glicemia</label>
+        <label class="checkbox-item"><input type="checkbox" name="examen[]" value="Orina"> Orina</label>
+        <label class="checkbox-item"><input type="checkbox" name="examen[]" value="Heces"> Heces</label>
+      </div>
+    </div>
+  `;
+
+      campoExamen.style.display = 'block';
   }
 };
 

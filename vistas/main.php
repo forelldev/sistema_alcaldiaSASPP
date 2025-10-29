@@ -10,16 +10,16 @@
 </head>
 <body class="body-main">
     <header class="header">
-        <div class="titulo-header">Sistema de Solicitud de Ayudas</div> 
+        <div class="titulo-header">SASPP</div> 
         <div class="header-right">
-            <div class="rol">Rol: <?= $_SESSION['rol'] ?></div>
-            <?php if ($_SESSION['id_rol'] == 1 || $_SESSION['id_rol'] == 4) { ?>
-            <a href="<?= BASE_URL ?>/busqueda" class="nueva-solicitud-btn"><i class="fas fa-plus"></i> Nueva Solicitud</a>
+            <div class="rol">Oficina: <?= $_SESSION['rol'] ?></div>
+            <?php if ($_SESSION['id_rol'] == 0 || $_SESSION['id_rol'] == 4) { ?>
+            <a href="<?= BASE_URL ?>/casos_ci_busqueda" class="nueva-solicitud-btn"><i class="fas fa-plus"></i> Nuevo Caso</a>
             <?php } ?>
             <?php if(!$_SESSION['id_rol'] == 0) {?>
           <div class="notification-dropdown">
                 <button class="notificaciones-btn" id="btn-notificaciones">
-                    <i class="fas fa-bell"></i> Notificaciones
+                    <i class="fas fa-bell"></i> Casos
                     <?php
                     $total = 0;
                     foreach ($datos as $grupo) {
@@ -39,7 +39,7 @@
                             <?php foreach ($grupo['datos'] as $noti): ?>
                                 <li class="notificacion-item">
                                     <strong><?= ucfirst($tipo) ?>:</strong>
-                                    <a href="<?= BASE_URL ?>/noti?id_doc=<?= htmlspecialchars($noti['id_doc']) ?>&tabla=<?= urlencode($grupo['tabla']) ?>&id_name=<?= urlencode($grupo['id_name']) ?>">
+                                    <a href="<?= BASE_URL ?>/noti_caso?id_caso=<?= htmlspecialchars($noti['id_caso'])?>">
                                         <?= htmlspecialchars($noti['descripcion']) ?><br>
                                         <?= htmlspecialchars($noti['estado'] ?? 'Sin mensaje') ?>
                                         <span class="fecha"><?= date('d/m/Y H:i', strtotime($noti['fecha'])) ?></span>
@@ -47,9 +47,9 @@
                                 </li>
                             <?php endforeach; ?>
                         <?php endforeach; ?>
-                            <a href="<?= $_SESSION['id_rol'] == 2 ? 'marcar_vistasDespacho' : 'marcar_vistas' ?>">Marcar todas como vistas</a>
+                            <a href="<?=BASE_URL?>/marcar_vistas_new">Marcar todos los casos como vistos</a>
                         <?php else: ?>
-                            <li class="notificacion-item">No hay notificaciones nuevas.</li>
+                            <li class="notificacion-item">No hay nuevos casos por atender.</li>
                         <?php endif; ?>
                     </ul>
                 </div>
@@ -69,53 +69,48 @@
                     <a href="<?= BASE_URL ?>/reportes_acciones"><i class="fas fa-file-alt"></i> Reportes de Acciones</a>
                     <a href="<?= BASE_URL ?>/reportes"><i class="fas fa-chart-bar"></i> Reportes</a>
                     <a href="<?= BASE_URL ?>/limites"><i class="fas fa-user-shield"></i> Límite por rol</a>
+                    <a href="<?= BASE_URL ?>/estadisticas"><i class="fas fa-chart-bar"></i> Estadísticas de Solicitudes</a>
             </div>
         </div>
-    <div class="dropdown">
+    <!-- <div class="dropdown">
         <button class="nav-btn dropdown-toggle" aria-label="Menú" id="menuDropdownBtn">
             <i class="fas fa-chart-bar"></i> Estadísticas
         </button>
         <div class="dropdown-menu" id="menuDropdown">
-            <a href="<?= BASE_URL ?>/estadisticas"><i class="fas fa-chart-bar"></i> Estadísticas de Solicitudes</a>
-            <!-- <a href="">Estadísticas de Usuarios</a> -->
+            
+            <a href="">Estadísticas de Usuarios</a>
         </div>
-    </div>
+    </div> -->
     <?php } ?>
 
-    <?php if(!$_SESSION['id_rol'] == 0){ ?>
     <div class="dropdown">
         <button class="nav-btn dropdown-toggle" aria-label="Menú" id="menuDropdownBtn">
-            <i class="fas fa-folder-open"></i> Solicitudes
+            <i class="fas fa-folder-open"></i> Casos
         </button>
         <div class="dropdown-menu" id="menuDropdown">
-            <a href="<?= BASE_URL ?>/solicitudes_list"><i class="fas fa-folder-open"></i> Solicitudes de Ayuda</a>
-            <?php if ($_SESSION['id_rol'] == 4 || $_SESSION['id_rol'] == 1 ) { ?>
-                <a href="<?= BASE_URL ?>/solicitudes_desarrollo"><i class="fas fa-folder-open"></i> Solicitudes de Desarrollo Social</a>
+            <a href="<?= BASE_URL ?>/casos_lista"><i class="fas fa-folder-open"></i> Lista de casos</a>
+            <?php if ($_SESSION['id_rol'] == 1 || $_SESSION['id_rol'] == 2 || $_SESSION['id_rol'] == 3) { ?>
+                <a href="<?= BASE_URL ?>/solicitudes_list"><i class="fas fa-folder-open"></i> Lista de Solicitudes (Generales)</a>
             <?php } ?>
-            <?php if ($_SESSION['id_rol'] == 2 || $_SESSION['id_rol'] == 4) { ?>
-                <a href="<?= BASE_URL ?>/despacho_list"><i class="fas fa-folder-open"></i> Solicitudes Despacho</a>
+            <?php if($_SESSION['id_rol'] == 4){?>
+                <a href="<?= BASE_URL.'/solicitudes_list'?>"><i class="fas fa-folder-open"></i> Lista de Solicitudes Generales</a>
+                <a href="<?= BASE_URL.'/despacho_list'?>"><i class="fas fa-folder-open"></i> Lista de Solicitudes de Oficina Despacho</a>
+                <a href="<?= BASE_URL.'/solicitudes_desarrollo'?>"><i class="fas fa-folder-open"></i> Lista de Solicitudes de Oficina Desarrollo Social</a>
+            <?php } else if (!$_SESSION['id_rol'] == 0){ ?>
+                <a href="<?= BASE_URL.'/'.$direccion?>"><i class="fas fa-folder-open"></i> Lista de Solicitudes de Oficina (<?= $_SESSION['rol']; ?>)</a>
+            <?php } if($_SESSION['id_rol'] == 1 || $_SESSION['id_rol'] == 4){ ?>
+            <a href="<?= BASE_URL ?>/constancias"><i class="fas fa-file-alt"></i> Constancias</a>
             <?php } ?>
         </div>
     </div>
-    <?php } ?>
-    <?php if ($_SESSION['id_rol'] == 1 || $_SESSION['id_rol'] == 4) { ?>
-    <div class="dropdown">
+
+    <!-- <div class="dropdown">
         <button class="nav-btn dropdown-toggle" aria-label="Menú" id="menuDropdownBtn">
             <i class="fas fa-file-alt"></i> Constancias
         </button>
         <div class="dropdown-menu" id="menuDropdown">
-            <a href="<?= BASE_URL ?>/constancias"><i class="fas fa-file-alt"></i> Constancias</a>
-    <?php } ?>
         </div>
-    </div>
-    <?php if ($_SESSION['id_rol'] == 0 || $_SESSION['id_rol'] == 4) { ?>
-    <div class="dropdown">
-        <button class="nav-btn dropdown-toggle" aria-label="Menú" id="menuDropdownBtn">
-            <i class="fas fa-file-alt"></i> Casos
-        </button>
-        <div class="dropdown-menu" id="menuDropdown">
-            <a href="<?= BASE_URL ?>/casos_lista"><i class="fas fa-file-alt"></i> Lista de Casos</a>
-    <?php } ?>
+    </div> -->
         </div>
     </div>
     <div class="dropdown">
@@ -131,9 +126,8 @@
     
     <main>
         <section class="main-content">
-            <h1 class="mensaje"><?= isset($msj) ? htmlspecialchars($msj) : '' ?></h1>
             <div class="card desc-section">
-                <h1>Descripción del Programa</h1>
+                <h1>SASPP</h1>
                 <p>
                     Este sistema permite gestionar solicitudes de ayuda de manera eficiente, proporcionando herramientas para la administración de usuarios, generación de reportes y estadísticas. Además, facilita la visualización de solicitudes pendientes y su estado, permitiendo a los administradores priorizar y atender las solicitudes de manera oportuna.<br><br>
                     Con una interfaz intuitiva, los usuarios pueden navegar fácilmente por las diferentes secciones del sistema, como la gestión de usuarios, la configuración de perfiles y la consulta de datos relevantes para la toma de decisiones estratégicas.
@@ -153,9 +147,14 @@
         </section>
     </main>
 </body>
+<script src="<?= BASE_URL ?>/public/js/msj.js"></script>
 <script src="<?= BASE_URL ?>/public/js/sesionReload.js"></script>
 <script>
     const BASE_PATH = "<?php echo BASE_PATH; ?>";
+    <?php if (isset($msj)): ?> mostrarMensaje("<?= htmlspecialchars($msj) ?>", "info", 6500);
+        <?php endif; ?>
+        <?php if (isset($_GET['msj'])): ?> mostrarMensaje("<?= htmlspecialchars($_GET['msj']) ?>", "info", 6500);
+        <?php endif; ?>
 </script>
 <script src="<?= BASE_URL ?>/public/js/validarSesion.js"></script>
 <script src="<?= BASE_URL ?>/public/js/dropdown.js"></script>

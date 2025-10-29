@@ -41,31 +41,47 @@ class LoginControl {
         }
         $datos = [];
         $msj = null;
-        // Notificaciones generales (solicitud_ayuda)
+        
+        // Notificaciones de casos
+        
         $notificaciones_casos = Notificaciones::mostrar_notificaciones_casos();
         if($notificaciones_casos['exito']){
             $datos['casos'] = $notificaciones_casos['datos']['casos'];
         }
-        $notificaciones = Notificaciones::mostrarNotificaciones($_SESSION['id_rol']);
-        if ($notificaciones['exito']) {
-            $datos = $notificaciones['datos'] ?? [];
+
+
+        switch($_SESSION['id_rol']){
+            case 1:
+                $direccion = 'solicitudes_list';
+                break;
+            case 2:
+                $direccion = 'despacho_list';
+                break;
+            case 3:
+                $direccion = 'solicitudes_desarrollo';
+                break;
         }
+        // Notificaciones generales (solicitud_ayuda)
+        // $notificaciones = Notificaciones::mostrarNotificaciones($_SESSION['id_rol']);
+        // if ($notificaciones['exito']) {
+        //     $datos = $notificaciones['datos'] ?? [];
+        // }
 
         // Notificaciones de despacho y master (solo rol 2 y 4)
-        if ($_SESSION['id_rol'] == 2 || $_SESSION['id_rol'] == 4) {
-            $notificaciones_despacho = Notificaciones::mostrar_notificaciones_despacho();
-            if ($notificaciones_despacho['exito']) {
-                $datos['despacho'] = $notificaciones_despacho['datos']['despacho'];
-            }
-        }
+        // if ($_SESSION['id_rol'] == 2 || $_SESSION['id_rol'] == 4) {
+        //     $notificaciones_despacho = Notificaciones::mostrar_notificaciones_despacho();
+        //     if ($notificaciones_despacho['exito']) {
+        //         $datos['despacho'] = $notificaciones_despacho['datos']['despacho'];
+        //     }
+        // }
 
         // Notificaciones de desarrollo y master (solo rol 1 y 4)
-        if ($_SESSION['id_rol'] == 1 || $_SESSION['id_rol'] == 4) {
-            $notificaciones_desarrollo = Notificaciones::mostrar_notificaciones_desarrollo();
-            if ($notificaciones_desarrollo['exito']) {
-                $datos['desarrollo'] = $notificaciones_desarrollo['datos']['desarrollo'];
-            }
-        }
+        // if ($_SESSION['id_rol'] == 1 || $_SESSION['id_rol'] == 4) {
+        //     $notificaciones_desarrollo = Notificaciones::mostrar_notificaciones_desarrollo();
+        //     if ($notificaciones_desarrollo['exito']) {
+        //         $datos['desarrollo'] = $notificaciones_desarrollo['datos']['desarrollo'];
+        //     }
+        // }
 
         // if(!$notificaciones['exito'] && !$notificaciones_despacho['exito'] && !$notificaciones_desarrollo['exito']){
         //     $msj = 'No se encontraron notificaciones';
@@ -248,7 +264,7 @@ public function validarSesionAjax() {
             Notificaciones::marcar_vista();
             // Capturar el resultado de las notificaciones
             $notificaciones = Notificaciones::mostrarNotificaciones($_SESSION['id_rol']);
-
+            
             // Validar si hubo error
             if ($notificaciones === false || !isset($notificaciones['exito'])) {
                 echo 'false error';

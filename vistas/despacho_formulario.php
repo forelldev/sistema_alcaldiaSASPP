@@ -17,7 +17,6 @@
         </div>
     </header>
     <main>
-        <h1 class="mensaje"><?= isset($msj) ? htmlspecialchars($msj) : '' ?></h1>
         <form action="despacho_enviarForm" method="POST" class="formulario-ayuda" autocomplete="off">
             <h2><i class="fa fa-truck"></i> Solicitud de Despacho</h2>
             <div class="fila-formulario">
@@ -89,8 +88,12 @@
         </form>
     </main>
 </body>
+<script src="<?= BASE_URL ?>/public/js/msj.js"></script>
 <script>
     const BASE_PATH = "<?php echo BASE_PATH; ?>";
+    <?php if (isset($msj)):?> 
+        mostrarMensaje("<?= htmlspecialchars($msj) ?>", "info", 6500);
+    <?php endif; ?>
 </script>
 <script src="<?= BASE_URL ?>/public/js/sesionReload.js"></script>
 <script src="<?= BASE_URL ?>/public/js/validarSesion.js"></script>

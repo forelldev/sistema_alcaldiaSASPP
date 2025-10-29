@@ -1623,6 +1623,9 @@
   background: #7a0015;
   color: #fff;
 }
+
+
+
 @media (max-width: 700px) {
   .usuario-card {
     flex-direction: column;
