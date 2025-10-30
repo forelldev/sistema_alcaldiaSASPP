@@ -37,15 +37,15 @@
                         <div><strong>Hora:</strong> <?= htmlspecialchars(date('g:i A', strtotime($fila['fecha']))) ?></div>
                     </div>
                     <div class="solicitud-info">
-                        <div><strong>Resumen:</strong> <?= htmlspecialchars($fila['descripcion']) ?></div>
-                        <div><strong>Número de documento:</strong> <?= htmlspecialchars($fila['id_manual'] ?? '') ?></div>
+                        <div><strong>Descripcion:</strong> <?= htmlspecialchars($fila['descripcion']) ?></div>
+                        <div><strong>Número de documento:</strong> <?= htmlspecialchars($fila['id_caso'] ?? '') ?></div>
                         <div><strong>Cédula del Beneficiario:</strong> <?= htmlspecialchars($fila['ci'] ?? '') ?></div>
                         <div><strong>Remitente:</strong> <?= htmlspecialchars(($fila['nombre'] ?? '') . ' ' . ($fila['apellido'] ?? ''))?></div>
                         <div><strong>Creador del caso:</strong> <?= htmlspecialchars($fila['creador'] ?? '') ?></div>
                         <div><strong>Dirección a la que se dirige:</strong> <?= htmlspecialchars($fila['direccion'] ?? '') ?></div>
                     </div>
                     <div class="solicitud-actions">
-                        <a href="<?= BASE_URL ?>/generar_solicitud?id_caso=<?= $fila['id_caso']?>&&direccion=<?= $fila['direccion'] ?>&&ci=<?= $fila['ci'] ?>" class="aprobar-btn">Continuar Caso</a>
+                        <a href="<?= BASE_URL ?>/continuar_caso?id_caso=<?= $fila['id_caso']?>&&direccion=<?= $fila['direccion'] ?>&&ci=<?= $fila['ci'] ?>" class="aprobar-btn">Continuar Caso</a>
                         <?php if($fila['estado'] == 'Sin Atender'){ ?>
                         <?php if ($_SESSION['id_rol'] == 0 || $_SESSION['id_rol'] == 4): ?>
                             <a href="<?= BASE_URL.'/editar?id_caso='.$fila['id_caso'] ?>" class="aprobar-btn">Editar</a>

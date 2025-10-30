@@ -88,16 +88,13 @@
             <i class="fas fa-folder-open"></i> Casos
         </button>
         <div class="dropdown-menu" id="menuDropdown">
-            <a href="<?= BASE_URL ?>/casos_lista"><i class="fas fa-folder-open"></i> Lista de casos</a>
-            <?php if ($_SESSION['id_rol'] == 1 || $_SESSION['id_rol'] == 2 || $_SESSION['id_rol'] == 3) { ?>
-                <a href="<?= BASE_URL ?>/solicitudes_list"><i class="fas fa-folder-open"></i> Lista de Solicitudes (Generales)</a>
-            <?php } ?>
+            <a href="<?= BASE_URL ?>/casos_lista"><i class="fas fa-folder-open"></i> Lista de casos sin atender</a>
             <?php if($_SESSION['id_rol'] == 4){?>
                 <a href="<?= BASE_URL.'/solicitudes_list'?>"><i class="fas fa-folder-open"></i> Lista de Solicitudes Generales</a>
                 <a href="<?= BASE_URL.'/despacho_list'?>"><i class="fas fa-folder-open"></i> Lista de Solicitudes de Oficina Despacho</a>
                 <a href="<?= BASE_URL.'/solicitudes_desarrollo'?>"><i class="fas fa-folder-open"></i> Lista de Solicitudes de Oficina Desarrollo Social</a>
             <?php } else if (!$_SESSION['id_rol'] == 0){ ?>
-                <a href="<?= BASE_URL.'/'.$direccion?>"><i class="fas fa-folder-open"></i> Lista de Solicitudes de Oficina (<?= $_SESSION['rol']; ?>)</a>
+                <a href="<?= BASE_URL.'/casos_procesos_lista'?>"><i class="fas fa-folder-open"></i> Lista de Casos en Proceso (<?= $_SESSION['rol']; ?>)</a>
             <?php } ?>
         </div>
     </div>

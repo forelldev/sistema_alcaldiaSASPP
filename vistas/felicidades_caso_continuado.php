@@ -18,14 +18,14 @@
     </header>
     <main>
         <div class="registro-card form-user" style="text-align:center;">
-            <h1><i class="fa fa-check-circle" style="color:#3b4cca"></i> Caso registrado con éxito!</p>
+            <h1><i class="fa fa-check-circle" style="color:#3b4cca"></i> Caso actualizado y en procedimiento con éxito!</p>
         </div>
     </main>
 </body>
 <script>
     setTimeout(function() {
-        window.location.href = "<?= BASE_URL ?>/casos_lista";
-    }, 5000);
+        window.location.href = "<?= BASE_URL ?>/casos_procesos_lista";
+    }, 2000);
 </script>
 <script>
     const BASE_PATH = "<?php echo BASE_PATH; ?>";

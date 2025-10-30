@@ -18,7 +18,7 @@
             <?= htmlspecialchars($datos_beneficiario['solicitante']['nombre'] ?? '') . ' ' . htmlspecialchars($datos_beneficiario['solicitante']['apellido'] ?? '').' '.htmlspecialchars($datos_beneficiario['solicitante']['ci']) ?>
         </div>
                 <div class="header-right">
-            <a href="<?= BASE_URL ?>/solicitudes_desarrollo">
+            <a href="<?= BASE_URL ?>/casos_lista">
                 <button class="nav-btn"><i class="fa fa-arrow-left"></i> Volver</button>
             </a>
         </div>
@@ -41,13 +41,13 @@
                 <option value="Enseres">Enseres</option>
             </select>
 
-            <input type="hidden" name="tipo_ayuda" value="Otros">
             <input type="hidden" name="id_caso" value="<?= $id_caso ?? '' ?>">
             <input type="hidden" name="direccion" value="<?=$direccion ?? ''?>">
+            <input type="hidden" name="ci" value="<?=$ci ?? ''?>">
         </div>
 
         <div class="form-boton-contenedor">
-            <input type="submit" value="Registrar Solicitud" class="btn-principal">
+            <input type="submit" value="Procesar Caso" class="btn-principal">
         </div>
         </form>
 

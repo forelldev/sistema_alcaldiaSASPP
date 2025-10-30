@@ -50,17 +50,6 @@ class LoginControl {
         }
 
 
-        switch($_SESSION['id_rol']){
-            case 1:
-                $direccion = 'solicitudes_list';
-                break;
-            case 2:
-                $direccion = 'despacho_list';
-                break;
-            case 3:
-                $direccion = 'solicitudes_desarrollo';
-                break;
-        }
         // Notificaciones generales (solicitud_ayuda)
         // $notificaciones = Notificaciones::mostrarNotificaciones($_SESSION['id_rol']);
         // if ($notificaciones['exito']) {

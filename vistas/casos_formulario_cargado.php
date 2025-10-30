@@ -20,7 +20,7 @@
     </div>
   </header>
 
-  <form action="<?= BASE_URL ?>/casos_enviar" method="POST" id="form_caso" class="formulario-ayuda">
+  <form action="<?= BASE_URL ?>/casos_enviar" method="POST" id="form_caso" class="formulario-ayuda" enctype="multipart/form-data">
       <h2 class="form-titulo"><i class="fa fa-folder-plus"></i> Nuevo Caso</h2>
 
       <div class="titulo-seccion"><i class="fa fa-user"></i> Datos del Solicitante</div>
@@ -54,6 +54,9 @@
        <!-- <div id="campos-dinamicos"></div> -->
         <label for="descripcion">Descripción del Caso:</label>
         <input type="text" name="descripcion" id="descripcion">
+
+        <label for="carta">Carta:</label>
+        <input type="file" name="carta" id="carta" required>
       </div>
 
       <div class="form-boton-contenedor">

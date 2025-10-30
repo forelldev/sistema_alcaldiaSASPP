@@ -19,7 +19,7 @@
             <?php if($_SESSION['id_rol'] == 0 || $_SESSION['id_rol'] == 4){?>
                 <a href="<?=BASE_URL?>/casos_ci_busqueda"><button class="principal-btn"><i class="fa fa-plus"></i> Registrar Nuevo Caso</button></a>
             <?php } ?>
-        <a href="<?= BASE_URL ?>/casos_procesos_lista"><button class="nav-btn"><i class="fa fa-arrow-left"></i> Ver casos en proceso </button></a>
+        <a href="<?= BASE_URL ?>/casos_lista"><button class="nav-btn"><i class="fa fa-arrow-left"></i> Ver casos sin atender </button></a>
       <a href="<?= BASE_URL ?>/main"><button class="nav-btn"><i class="fa fa-arrow-left"></i> Volver atrás</button></a>
 
       </div>
@@ -54,22 +54,22 @@
                         <div><strong>Remitente:</strong> <?= htmlspecialchars(($fila['nombre'] ?? '') . ' ' . ($fila['apellido'] ?? ''))?></div>
                         <div><strong>Creador del caso:</strong> <?= htmlspecialchars($fila['creador'] ?? '') ?></div>
                         <div><strong>Dirección a la que se dirige:</strong> <?= htmlspecialchars($fila['direccion'] ?? '') ?></div>
-                        <div><strong>Oficina Actual:</strong> <?= htmlspecialchars($fila['oficina'] ?? '') ?></div>
+                        <div><strong>Oficina actual:</strong> <?= htmlspecialchars($fila['oficina'] ?? '') ?></div>
+                        </div>
+                        
+                    <div class="solicitud-actions">
                         <?php if (!empty($fila['ubicacion'])): ?>
                             <a href="<?= BASE_URL . '/cartas/' . rawurlencode(basename($fila['ubicacion'])) ?>" target="_blank">Ver Carta</a>
                         <?php else: ?>
                             <span>Sin carta disponible</span>
                         <?php endif; ?>
-                        </div>
-                        
-                    <div class="solicitud-actions">
-                        <?php if(!$_SESSION['id_rol'] == 0){ ?>
-                        <a href="<?= BASE_URL ?>/atender_caso?id_caso=<?= $fila['id_caso']?>" class="aprobar-btn">Atender Caso</a>
-                        <?php } ?>
-                        <?php if($fila['estado'] == 'Sin Atender'){ ?>
-                        <?php if ($_SESSION['id_rol'] == 0 || $_SESSION['id_rol'] == 4): ?>
-                            <a href="<?= BASE_URL.'/editar?id_caso='.$fila['id_caso'] ?>" class="aprobar-btn">Editar</a>
-                        <?php endif; ?>
+
+                        <?php if($_SESSION['id_rol'] == 2 && $fila['estado'] == 'En Proceso'){ ?>
+                            <a href="<?= BASE_URL ?>/accion?id_caso=<?= $fila['id_caso']?>&&accion=informado" class="aprobar-btn">Dar Como Informado</a>
+                        <?php } else if ($_SESSION['id_rol'] == 2 && $fila['estado'] == 'Informado'){ ?>
+                            <a href="<?= BASE_URL ?>/accion?id_caso=<?= $fila['id_caso']?>&&accion=aprobar" class="aprobar-btn">Aprobar</a>
+                            <a href="<?= BASE_URL ?>/accion?id_caso=<?= $fila['id_caso']?>&&accion=negar" class="aprobar-btn">Negar</a>
+                            <a href="<?= BASE_URL ?>/accion?id_caso=<?= $fila['id_caso']?>&&accion=diferir" class="aprobar-btn">Diferir</a>
                         <?php } ?>
                     </div>
                 </div>
@@ -91,7 +91,9 @@
 <script>
     const BASE_PATH = "<?php echo BASE_PATH; ?>";
     <?php if (isset($msj)): ?> mostrarMensaje("<?= htmlspecialchars($msj) ?>", "info", 6500);
-            <?php endif; ?>
+    <?php endif; ?>
+    <?php if (isset($_GET['msj'])): ?> mostrarMensaje("<?= htmlspecialchars($_GET['msj']) ?>", "info", 6500);
+    <?php endif; ?>
 </script>
 <script src="<?= BASE_URL ?>/public/js/sesionReload.js"></script>
 <script src="<?= BASE_URL ?>/public/js/validarSesion.js"></script>

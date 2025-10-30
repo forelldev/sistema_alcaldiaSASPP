@@ -84,12 +84,12 @@ Router::post('/casos_enviar', 'AtencionControl@casos_enviar');
 Router::get('/felicidades_casos', 'AtencionControl@felicidades_casos');
 Router::post('/casos_anteriores', 'AtencionControl@casos_anteriores');
 Router::get('/atender_caso', 'AtencionControl@atender_caso');
-Router::get('/generar_solicitud', 'AtencionControl@generar_solicitud');
+Router::get('/continuar_caso', 'AtencionControl@continuar_caso');
 Router::get('/marcar_vistas_new', 'AtencionControl@marcar_vistas_new');
 Router::get('/noti_caso', 'AtencionControl@atender_caso');
 Router::get('/felicidades_despacho', 'DespachoControl@felicidades_despacho');
 Router::post('/caso_continuar','AtencionControl@caso_continuar');
 Router::get('/felicidades_caso_continuado','AtencionControl@felicidades_caso_continuado');
-
-
+Router::get('/casos_procesos_lista','AtencionControl@casos_procesos_lista');
+Router::get('/accion','AtencionControl@accion');
 ?>

@@ -24,13 +24,12 @@ DROP TABLE IF EXISTS `casos`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `casos` (
   `id_caso` int(11) NOT NULL AUTO_INCREMENT,
-  `id_manual` varchar(50) NOT NULL,
   `ci` varchar(20) NOT NULL,
   `estado` varchar(50) DEFAULT 'Sin Atender',
   `direccion` varchar(75) NOT NULL,
-  PRIMARY KEY (`id_caso`),
-  UNIQUE KEY `id_manual` (`id_manual`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `oficina` varchar(100) NOT NULL,
+  PRIMARY KEY (`id_caso`)
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,8 +38,39 @@ CREATE TABLE `casos` (
 
 LOCK TABLES `casos` WRITE;
 /*!40000 ALTER TABLE `casos` DISABLE KEYS */;
-INSERT INTO `casos` VALUES (3,'232323','3215','Sin Atender','Desarrollo Social'),(4,'21231212','3215','Sin Atender','Desarrollo Social'),(5,'212121221','3215','Sin Atender','Desarrollo Social'),(6,'111111111','3215','Sin Atender','Despacho'),(7,'52525252','3215','Sin Atender','Desarrollo Social');
+INSERT INTO `casos` VALUES (23,'3215','En Proceso','Desarrollo Social','Aún no ha llegado a una oficina'),(24,'3215','En Proceso','Desarrollo Social','Aún no ha llegado a una oficina'),(25,'3215','En Proceso','Desarrollo Social','Despacho');
 /*!40000 ALTER TABLE `casos` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `casos_archivos`
+--
+
+DROP TABLE IF EXISTS `casos_archivos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `casos_archivos` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_caso` int(11) NOT NULL,
+  `ubicacion` varchar(255) NOT NULL,
+  `nombre_original` varchar(255) NOT NULL,
+  `tipo_mime` varchar(100) DEFAULT NULL,
+  `peso_kb` int(11) DEFAULT NULL,
+  `fecha_subida` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `id_caso` (`id_caso`),
+  CONSTRAINT `casos_archivos_ibfk_1` FOREIGN KEY (`id_caso`) REFERENCES `casos` (`id_caso`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `casos_archivos`
+--
+
+LOCK TABLES `casos_archivos` WRITE;
+/*!40000 ALTER TABLE `casos_archivos` DISABLE KEYS */;
+INSERT INTO `casos_archivos` VALUES (7,23,'cartas/carta_6903eab12bc61_logo #3 ###.png','logo #3 ###.png','image/png',75,'2025-10-30 18:46:09'),(8,24,'cartas/carta_6903ec87c212b_logo #3 ###.png','logo #3 ###.png','image/png',75,'2025-10-30 18:53:59'),(9,25,'cartas/carta_6903ed2cbd670_logo #3 ###.png','logo #3 ###.png','image/png',75,'2025-10-30 18:56:44');
+/*!40000 ALTER TABLE `casos_archivos` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -58,7 +88,7 @@ CREATE TABLE `casos_categoria` (
   PRIMARY KEY (`id`),
   KEY `id_caso` (`id_caso`),
   CONSTRAINT `casos_categoria_ibfk_1` FOREIGN KEY (`id_caso`) REFERENCES `casos` (`id_caso`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -67,7 +97,7 @@ CREATE TABLE `casos_categoria` (
 
 LOCK TABLES `casos_categoria` WRITE;
 /*!40000 ALTER TABLE `casos_categoria` DISABLE KEYS */;
-INSERT INTO `casos_categoria` VALUES (1,3,'Medicamentos','Salud'),(2,4,'Exámenes de sangre','Laboratorio'),(3,5,'Antiinflamatorios','Medicamentos'),(4,6,'Mochilas','Utiles'),(5,7,'Antibióticos','Medicamentos');
+INSERT INTO `casos_categoria` VALUES (18,23,'Sin Registrar','Medicamentos'),(19,24,'Sin Registrar','Medicamentos'),(20,25,'Sin Registrar','Medicamentos');
 /*!40000 ALTER TABLE `casos_categoria` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -83,10 +113,11 @@ CREATE TABLE `casos_fecha` (
   `id_caso` int(11) NOT NULL,
   `fecha` datetime NOT NULL,
   `visto` int(11) NOT NULL,
+  `fecha_modificacion` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_caso` (`id_caso`),
   CONSTRAINT `casos_fecha_ibfk_1` FOREIGN KEY (`id_caso`) REFERENCES `casos` (`id_caso`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -95,7 +126,7 @@ CREATE TABLE `casos_fecha` (
 
 LOCK TABLES `casos_fecha` WRITE;
 /*!40000 ALTER TABLE `casos_fecha` DISABLE KEYS */;
-INSERT INTO `casos_fecha` VALUES (3,3,'2025-10-17 18:50:04',1),(4,4,'2025-10-29 16:25:47',1),(5,5,'2025-10-29 16:39:23',1),(6,6,'2025-10-29 16:40:19',0),(7,7,'2025-10-29 17:16:33',1);
+INSERT INTO `casos_fecha` VALUES (23,23,'2025-10-30 18:46:09',1,'0000-00-00 00:00:00'),(24,24,'2025-10-30 18:53:59',1,'0000-00-00 00:00:00'),(25,25,'2025-10-30 18:56:44',1,'0000-00-00 00:00:00');
 /*!40000 ALTER TABLE `casos_fecha` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -114,7 +145,7 @@ CREATE TABLE `casos_info` (
   PRIMARY KEY (`id`),
   KEY `id_caso` (`id_caso`),
   CONSTRAINT `casos_info_ibfk_1` FOREIGN KEY (`id_caso`) REFERENCES `casos` (`id_caso`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -123,7 +154,7 @@ CREATE TABLE `casos_info` (
 
 LOCK TABLES `casos_info` WRITE;
 /*!40000 ALTER TABLE `casos_info` DISABLE KEYS */;
-INSERT INTO `casos_info` VALUES (3,3,'Solicitud de Medicamentos para Jose Gonzalez en oficina de Desarrollo Social','atencion alciudadano'),(4,4,'Solicitud de Exámenes de sangre para Jose Gonzalez en oficina de Desarrollo Social','Alex Reyes'),(5,5,'Solicitud de Antiinflamatorios para Jose Gonzalez en oficina de Desarrollo Social','atencion alciudadano'),(6,6,'Solicitud de Mochilas para Jose Gonzalez en oficina de Despacho','atencion alciudadano'),(7,7,'Solicitud de Antibióticos para Jose Gonzalez en oficina de Desarrollo Social','atencion alciudadano');
+INSERT INTO `casos_info` VALUES (23,23,'sisas','atencion alciudadano'),(24,24,'sdfsdf','atencion alciudadano'),(25,25,'qweqwe','atencion alciudadano');
 /*!40000 ALTER TABLE `casos_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -330,7 +361,7 @@ CREATE TABLE `reportes_acciones` (
   PRIMARY KEY (`id`),
   KEY `id_doc` (`id_doc`),
   KEY `ci` (`ci`)
-) ENGINE=InnoDB AUTO_INCREMENT=86 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -339,7 +370,7 @@ CREATE TABLE `reportes_acciones` (
 
 LOCK TABLES `reportes_acciones` WRITE;
 /*!40000 ALTER TABLE `reportes_acciones` DISABLE KEYS */;
-INSERT INTO `reportes_acciones` VALUES (1,2,'2025-08-05 09:03:52','Envió la solicitud a administración por lo tanto, finalizó los 3 procesos, entregado!',3434),(2,2,'2025-08-05 09:04:56','Reinició el proceso de la solicitud',3434),(3,2,'2025-08-05 09:05:08','Recibió documento físico, y aprobó para su procedimiento',3434),(4,2,'2025-08-05 09:34:19','Envió la solicitud a despacho.',3434),(5,2,'2025-08-05 09:36:40','Envió la solicitud a administración.',3434),(6,2,'2025-08-05 09:38:14','Confirmó que se aceptó la ayuda.',3434),(7,2,'2025-08-05 09:38:26','Reinició el proceso de la solicitud.',3434),(8,1,'2025-08-05 20:27:04','Envió la solicitud a Administración. (Despacho)',123),(9,1,'2025-08-05 20:28:26','Confirmó que se entregó la ayuda. (Despacho)',123),(10,1,'2025-08-05 20:28:36','Reinició la solicitud. (Despacho)',123),(11,1,'2025-08-11 10:45:08','Inhabilitó la solicitud razón: porque siii',3434),(12,1,'2025-08-11 10:48:01','Inhabilitó la solicitud razón: pqsi',3434),(13,1,'2025-08-11 10:50:42','Inhabilitó la solicitud razón: pq si',123),(14,1,'2025-08-11 10:51:04','Habilitó la solicitud',123),(15,1,'2025-08-11 10:52:04','Habilitó la solicitud',123),(16,2,'2025-08-11 21:08:20','Recibió documento físico, y aprobó para su procedimiento.',34),(17,2,'2025-08-11 21:08:31','Envió la solicitud a despacho.',34),(18,2,'2025-09-12 08:35:18','Envió la solicitud a administración.',3434),(19,2,'2025-09-12 08:35:36','Confirmó que se aceptó la ayuda.',3434),(20,2,'2025-09-12 08:35:47','Reinició el proceso de la solicitud.',3434),(21,2,'2025-09-16 15:29:05','Recibió documento físico, y aprobó para su procedimiento.',34),(22,2,'2025-09-16 15:29:16','Envió la solicitud a despacho.',34),(23,2,'2025-09-16 15:31:32','Envió la solicitud a administración.',123),(24,2,'2025-09-16 15:33:19','Confirmó que se aceptó la ayuda.',321),(25,1,'2025-09-16 15:45:11','Envió la solicitud a Administración. (Despacho)',123),(26,1,'2025-09-16 15:46:02','Confirmó que se entregó la ayuda. (Despacho)',123),(27,1,'2025-09-16 15:46:12','Reinició la solicitud. (Despacho)',123),(28,2,'2025-09-17 20:54:52','Reinició el proceso de la solicitud.',3434),(29,2,'2025-09-17 20:55:11','Recibió documento físico, y aprobó para su procedimiento.',3434),(30,2,'2025-09-17 21:07:00','Envió la solicitud a despacho.',3434),(31,2,'2025-09-17 21:07:11','Envió la solicitud a administración.',3434),(32,2,'2025-09-17 21:07:22','Confirmó que se entregó la ayuda.',3434),(33,2,'2025-09-20 14:25:40','Reinició el proceso de la solicitud.',3434),(34,2,'2025-09-20 14:27:06','Recibió documento físico, y aprobó para su procedimiento.',34),(35,2,'2025-09-20 14:27:25','Envió la solicitud a despacho.',34),(36,2,'2025-09-20 14:28:34','Envió la solicitud a administración.',123),(37,2,'2025-09-20 14:29:55','Confirmó que se entregó la ayuda.',321),(38,2,'2025-09-20 16:03:23','Reinició el proceso de la solicitud.',3434),(39,2,'2025-09-22 11:43:20','Recibió documento físico, y aprobó para su procedimiento.',3434),(40,2,'2025-09-22 11:43:28','Envió la solicitud a despacho.',3434),(41,1,'2025-09-22 11:45:11','Envió la solicitud a Administración. (Despacho)',123),(42,2,'2025-09-23 15:54:55','Envió la solicitud a administración.',3434),(43,2,'2025-09-23 15:56:16','Confirmó que se entregó la ayuda.',3434),(44,2,'2025-09-23 15:56:53','Reinició el proceso de la solicitud.',3434),(45,2,'2025-09-25 12:43:35','Recibió documento físico, y aprobó para su procedimiento.',3434),(46,4,'2025-10-03 18:12:16','Creó una nueva constancia.',3434),(47,13,'2025-10-06 09:35:21','Creó una nueva solicitud de ayuda.',3434),(48,3,'2025-10-06 10:18:42','Recibió documento físico, y aprobó para su procedimiento.',3434),(49,3,'2025-10-06 10:18:55','Envió la solicitud a despacho.',3434),(50,3,'2025-10-06 10:19:07','Envió la solicitud a administración.',3434),(51,3,'2025-10-06 10:19:19','Confirmó que se entregó la ayuda.',3434),(52,3,'2025-10-06 10:19:32','Reinició el proceso de la solicitud.',3434),(53,13,'2025-10-12 16:32:03','Registró solicitud en Desarrollo Social',3434),(54,13,'2025-10-12 16:39:18','Aprobó la solicitud para su procedimiento (Desarrollo Social)',3434),(55,13,'2025-10-12 16:40:23','Envió la solicitud a Administración. (Desarrollo Social)',3434),(56,13,'2025-10-12 16:40:35','Confirmó que se entregó la ayuda. (Desarrollo Social)',3434),(57,13,'2025-10-12 16:40:47','Reinició la solicitud. (Desarrollo Social)',3434),(58,14,'2025-10-12 17:02:00','Registró solicitud en Desarrollo Social',3434),(59,13,'2025-10-12 18:46:47','Inhabilitó la solicitud razón: siempre estoy brishando',3434),(60,13,'2025-10-12 18:51:35','Habilitó la solicitud',3434),(61,13,'2025-10-12 18:53:29','Inhabilitó la solicitud razón: para probar algo',3434),(62,13,'2025-10-12 19:23:03','Editó la solicitud de Desarrollo Social',3434),(63,6,'2025-10-14 18:44:45','Creó una nueva solicitud de ayuda.',3434),(64,4,'2025-10-14 20:31:19','Inhabilitó la solicitud razón: porque quiero inhabilitarla y soy arrecho',3434),(65,4,'2025-10-14 20:34:37','Inhabilitó la solicitud razón: porque quiero ',3434),(66,4,'2025-10-14 20:38:49','Habilitó la solicitud',3434),(67,4,'2025-10-14 20:39:06','Inhabilitó la solicitud razón: de prueba 1',3434),(68,4,'2025-10-14 20:39:17','Habilitó la solicitud',3434),(69,7,'2025-10-14 21:01:54','Creó una nueva solicitud de ayuda.',3434),(70,15,'2025-10-14 21:22:29','Creó una nueva solicitud de ayuda.',3434),(71,6,'2025-10-15 09:17:28','Editó la solicitud',3434),(72,6,'2025-10-15 09:20:57','Inhabilitó la solicitud razón: razoncita',3434),(73,6,'2025-10-15 09:23:47','Editó la solicitud',3434),(74,6,'2025-10-15 09:24:08','Habilitó la solicitud',3434),(75,6,'2025-10-15 09:24:26','Inhabilitó la solicitud razón: pq si',3434),(76,6,'2025-10-15 09:24:38','Habilitó la solicitud',3434),(77,1,'2025-10-17 16:57:13','Creó un nuevo caso.',3434),(78,1,'2025-10-17 17:08:20','Creó un nuevo caso.',3434),(79,2,'2025-10-17 18:16:03','Creó un nuevo caso.',4343),(80,3,'2025-10-17 18:50:04','Creó un nuevo caso.',4343),(81,4,'2025-10-29 16:25:47','Creó un nuevo caso.',3434),(82,5,'2025-10-29 16:39:23','Creó un nuevo caso.',4343),(83,6,'2025-10-29 16:40:19','Creó un nuevo caso.',4343),(84,17,'2025-10-29 16:51:50','Registró solicitud en Desarrollo Social',34),(85,7,'2025-10-29 17:16:33','Creó un nuevo caso.',4343);
+INSERT INTO `reportes_acciones` VALUES (1,2,'2025-08-05 09:03:52','Envió la solicitud a administración por lo tanto, finalizó los 3 procesos, entregado!',3434),(2,2,'2025-08-05 09:04:56','Reinició el proceso de la solicitud',3434),(3,2,'2025-08-05 09:05:08','Recibió documento físico, y aprobó para su procedimiento',3434),(4,2,'2025-08-05 09:34:19','Envió la solicitud a despacho.',3434),(5,2,'2025-08-05 09:36:40','Envió la solicitud a administración.',3434),(6,2,'2025-08-05 09:38:14','Confirmó que se aceptó la ayuda.',3434),(7,2,'2025-08-05 09:38:26','Reinició el proceso de la solicitud.',3434),(8,1,'2025-08-05 20:27:04','Envió la solicitud a Administración. (Despacho)',123),(9,1,'2025-08-05 20:28:26','Confirmó que se entregó la ayuda. (Despacho)',123),(10,1,'2025-08-05 20:28:36','Reinició la solicitud. (Despacho)',123),(11,1,'2025-08-11 10:45:08','Inhabilitó la solicitud razón: porque siii',3434),(12,1,'2025-08-11 10:48:01','Inhabilitó la solicitud razón: pqsi',3434),(13,1,'2025-08-11 10:50:42','Inhabilitó la solicitud razón: pq si',123),(14,1,'2025-08-11 10:51:04','Habilitó la solicitud',123),(15,1,'2025-08-11 10:52:04','Habilitó la solicitud',123),(16,2,'2025-08-11 21:08:20','Recibió documento físico, y aprobó para su procedimiento.',34),(17,2,'2025-08-11 21:08:31','Envió la solicitud a despacho.',34),(18,2,'2025-09-12 08:35:18','Envió la solicitud a administración.',3434),(19,2,'2025-09-12 08:35:36','Confirmó que se aceptó la ayuda.',3434),(20,2,'2025-09-12 08:35:47','Reinició el proceso de la solicitud.',3434),(21,2,'2025-09-16 15:29:05','Recibió documento físico, y aprobó para su procedimiento.',34),(22,2,'2025-09-16 15:29:16','Envió la solicitud a despacho.',34),(23,2,'2025-09-16 15:31:32','Envió la solicitud a administración.',123),(24,2,'2025-09-16 15:33:19','Confirmó que se aceptó la ayuda.',321),(25,1,'2025-09-16 15:45:11','Envió la solicitud a Administración. (Despacho)',123),(26,1,'2025-09-16 15:46:02','Confirmó que se entregó la ayuda. (Despacho)',123),(27,1,'2025-09-16 15:46:12','Reinició la solicitud. (Despacho)',123),(28,2,'2025-09-17 20:54:52','Reinició el proceso de la solicitud.',3434),(29,2,'2025-09-17 20:55:11','Recibió documento físico, y aprobó para su procedimiento.',3434),(30,2,'2025-09-17 21:07:00','Envió la solicitud a despacho.',3434),(31,2,'2025-09-17 21:07:11','Envió la solicitud a administración.',3434),(32,2,'2025-09-17 21:07:22','Confirmó que se entregó la ayuda.',3434),(33,2,'2025-09-20 14:25:40','Reinició el proceso de la solicitud.',3434),(34,2,'2025-09-20 14:27:06','Recibió documento físico, y aprobó para su procedimiento.',34),(35,2,'2025-09-20 14:27:25','Envió la solicitud a despacho.',34),(36,2,'2025-09-20 14:28:34','Envió la solicitud a administración.',123),(37,2,'2025-09-20 14:29:55','Confirmó que se entregó la ayuda.',321),(38,2,'2025-09-20 16:03:23','Reinició el proceso de la solicitud.',3434),(39,2,'2025-09-22 11:43:20','Recibió documento físico, y aprobó para su procedimiento.',3434),(40,2,'2025-09-22 11:43:28','Envió la solicitud a despacho.',3434),(41,1,'2025-09-22 11:45:11','Envió la solicitud a Administración. (Despacho)',123),(42,2,'2025-09-23 15:54:55','Envió la solicitud a administración.',3434),(43,2,'2025-09-23 15:56:16','Confirmó que se entregó la ayuda.',3434),(44,2,'2025-09-23 15:56:53','Reinició el proceso de la solicitud.',3434),(45,2,'2025-09-25 12:43:35','Recibió documento físico, y aprobó para su procedimiento.',3434),(46,4,'2025-10-03 18:12:16','Creó una nueva constancia.',3434),(47,13,'2025-10-06 09:35:21','Creó una nueva solicitud de ayuda.',3434),(48,3,'2025-10-06 10:18:42','Recibió documento físico, y aprobó para su procedimiento.',3434),(49,3,'2025-10-06 10:18:55','Envió la solicitud a despacho.',3434),(50,3,'2025-10-06 10:19:07','Envió la solicitud a administración.',3434),(51,3,'2025-10-06 10:19:19','Confirmó que se entregó la ayuda.',3434),(52,3,'2025-10-06 10:19:32','Reinició el proceso de la solicitud.',3434),(53,13,'2025-10-12 16:32:03','Registró solicitud en Desarrollo Social',3434),(54,13,'2025-10-12 16:39:18','Aprobó la solicitud para su procedimiento (Desarrollo Social)',3434),(55,13,'2025-10-12 16:40:23','Envió la solicitud a Administración. (Desarrollo Social)',3434),(56,13,'2025-10-12 16:40:35','Confirmó que se entregó la ayuda. (Desarrollo Social)',3434),(57,13,'2025-10-12 16:40:47','Reinició la solicitud. (Desarrollo Social)',3434),(58,14,'2025-10-12 17:02:00','Registró solicitud en Desarrollo Social',3434),(59,13,'2025-10-12 18:46:47','Inhabilitó la solicitud razón: siempre estoy brishando',3434),(60,13,'2025-10-12 18:51:35','Habilitó la solicitud',3434),(61,13,'2025-10-12 18:53:29','Inhabilitó la solicitud razón: para probar algo',3434),(62,13,'2025-10-12 19:23:03','Editó la solicitud de Desarrollo Social',3434),(63,6,'2025-10-14 18:44:45','Creó una nueva solicitud de ayuda.',3434),(64,4,'2025-10-14 20:31:19','Inhabilitó la solicitud razón: porque quiero inhabilitarla y soy arrecho',3434),(65,4,'2025-10-14 20:34:37','Inhabilitó la solicitud razón: porque quiero ',3434),(66,4,'2025-10-14 20:38:49','Habilitó la solicitud',3434),(67,4,'2025-10-14 20:39:06','Inhabilitó la solicitud razón: de prueba 1',3434),(68,4,'2025-10-14 20:39:17','Habilitó la solicitud',3434),(69,7,'2025-10-14 21:01:54','Creó una nueva solicitud de ayuda.',3434),(70,15,'2025-10-14 21:22:29','Creó una nueva solicitud de ayuda.',3434),(71,6,'2025-10-15 09:17:28','Editó la solicitud',3434),(72,6,'2025-10-15 09:20:57','Inhabilitó la solicitud razón: razoncita',3434),(73,6,'2025-10-15 09:23:47','Editó la solicitud',3434),(74,6,'2025-10-15 09:24:08','Habilitó la solicitud',3434),(75,6,'2025-10-15 09:24:26','Inhabilitó la solicitud razón: pq si',3434),(76,6,'2025-10-15 09:24:38','Habilitó la solicitud',3434),(77,1,'2025-10-17 16:57:13','Creó un nuevo caso.',3434),(78,1,'2025-10-17 17:08:20','Creó un nuevo caso.',3434),(79,2,'2025-10-17 18:16:03','Creó un nuevo caso.',4343),(80,3,'2025-10-17 18:50:04','Creó un nuevo caso.',4343),(81,4,'2025-10-29 16:25:47','Creó un nuevo caso.',3434),(82,5,'2025-10-29 16:39:23','Creó un nuevo caso.',4343),(83,6,'2025-10-29 16:40:19','Creó un nuevo caso.',4343),(84,17,'2025-10-29 16:51:50','Registró solicitud en Desarrollo Social',34),(85,7,'2025-10-29 17:16:33','Creó un nuevo caso.',4343),(86,9,'2025-10-29 18:01:24','Creó un nuevo caso.',4343),(87,10,'2025-10-29 18:03:05','Creó un nuevo caso.',4343),(88,11,'2025-10-29 18:11:47','Creó un nuevo caso.',4343),(89,12,'2025-10-30 15:46:18','Creó un nuevo caso.',4343),(90,13,'2025-10-30 15:50:33','Creó un nuevo caso.',4343),(91,14,'2025-10-30 17:26:54','Creó un nuevo caso.',4343),(92,15,'2025-10-30 17:43:33','Creó un nuevo caso.',4343),(93,16,'2025-10-30 17:47:07','Creó un nuevo caso.',4343),(94,17,'2025-10-30 17:49:57','Creó un nuevo caso.',4343),(95,18,'2025-10-30 18:23:29','Creó un nuevo caso.',4343),(96,19,'2025-10-30 18:40:38','Creó un nuevo caso.',4343),(97,20,'2025-10-30 18:43:29','Creó un nuevo caso.',4343),(98,21,'2025-10-30 18:44:05','Creó un nuevo caso.',4343),(99,22,'2025-10-30 18:45:00','Creó un nuevo caso.',4343),(100,23,'2025-10-30 18:46:09','Creó un nuevo caso.',4343),(101,24,'2025-10-30 18:53:59','Creó un nuevo caso.',4343),(102,25,'2025-10-30 18:56:44','Creó un nuevo caso.',4343);
 /*!40000 ALTER TABLE `reportes_acciones` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -356,7 +387,7 @@ CREATE TABLE `reportes_entradas` (
   `fecha_entrada` datetime NOT NULL,
   `fecha_salida` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -365,7 +396,7 @@ CREATE TABLE `reportes_entradas` (
 
 LOCK TABLES `reportes_entradas` WRITE;
 /*!40000 ALTER TABLE `reportes_entradas` DISABLE KEYS */;
-INSERT INTO `reportes_entradas` VALUES (1,3434,'2025-09-04 12:26:12','2025-09-05 12:55:59'),(2,3434,'2025-09-05 12:56:05','2025-09-12 08:24:41'),(3,3434,'2025-09-12 08:25:59','2025-09-13 17:37:11'),(4,3434,'2025-09-13 17:37:17','2025-09-14 08:45:06'),(5,3434,'2025-09-14 08:45:13','2025-09-15 14:02:45'),(6,3434,'2025-09-15 14:02:54','2025-09-16 14:48:19'),(7,3434,'2025-09-16 14:48:25','2025-09-16 15:19:41'),(8,34,'2025-09-16 15:20:03','2025-09-16 15:29:29'),(9,123,'2025-09-16 15:29:40','2025-09-16 15:31:59'),(10,321,'2025-09-16 15:32:12','2025-09-16 15:36:54'),(11,3434,'2025-09-16 15:39:29','2025-09-16 15:40:27'),(12,123,'2025-09-16 15:40:38','2025-09-16 15:43:06'),(13,3434,'2025-09-16 15:43:37','2025-09-16 15:44:33'),(14,123,'2025-09-16 15:44:48','2025-09-16 15:47:03'),(15,3434,'2025-09-17 14:46:06','2025-09-17 14:57:31'),(16,3434,'2025-09-17 14:58:17','2025-09-17 14:58:23'),(17,3434,'2025-09-17 14:58:50','2025-09-17 14:59:06'),(18,3434,'2025-09-17 15:05:28','2025-09-17 15:05:32'),(19,3434,'2025-09-17 15:06:17','2025-09-17 15:06:22'),(20,3434,'2025-09-17 15:07:03','2025-09-17 15:07:08'),(21,3434,'2025-09-17 15:07:37','2025-09-17 15:10:03'),(22,3434,'2025-09-17 15:10:27','2025-09-17 15:10:32'),(23,3434,'2025-09-17 15:12:15','2025-09-17 15:12:30'),(24,3434,'2025-09-17 15:13:25','2025-09-17 15:13:29'),(25,3434,'2025-09-17 15:20:39','2025-09-18 15:44:49'),(26,3434,'2025-09-18 15:44:59','2025-09-20 14:20:35'),(27,3434,'2025-09-20 14:20:43','2025-09-20 14:24:00'),(28,34,'2025-09-20 14:24:19','2025-09-20 14:25:07'),(29,3434,'2025-09-20 14:25:19','2025-09-20 14:26:08'),(30,34,'2025-09-20 14:26:29','2025-09-20 14:27:37'),(31,123,'2025-09-20 14:27:55','2025-09-20 14:28:45'),(32,321,'2025-09-20 14:28:55','2025-09-20 14:30:10'),(33,3434,'2025-09-20 14:30:25','2025-09-20 16:07:06'),(34,123,'2025-09-20 16:09:04','2025-09-22 11:23:30'),(35,3434,'2025-09-22 11:22:27','2025-09-22 11:23:04'),(36,123,'2025-09-22 11:23:37','2025-09-22 11:42:34'),(37,3434,'2025-09-22 11:42:46','2025-09-22 11:43:42'),(38,123,'2025-09-22 11:43:54','2025-09-22 12:01:05'),(39,3434,'2025-09-23 10:02:58','2025-09-24 14:41:32'),(40,3434,'2025-09-24 14:41:39','2025-09-24 17:22:43'),(41,3434,'2025-09-25 12:04:13','2025-09-25 12:26:45'),(42,3434,'2025-09-25 12:40:21','2025-10-03 08:09:01'),(43,3434,'2025-10-03 08:09:08','2025-10-03 12:03:16'),(44,3434,'2025-10-03 12:03:22','2025-10-03 15:50:09'),(45,3434,'2025-10-03 15:50:16','2025-10-04 09:20:06'),(46,3434,'2025-10-04 09:20:14','2025-10-05 10:53:54'),(47,3434,'2025-10-05 10:54:01','2025-10-05 15:38:56'),(48,123,'2025-10-05 15:39:29','2025-10-06 10:38:56'),(49,3434,'2025-10-06 07:51:39','2025-10-06 10:38:11'),(50,123,'2025-10-06 10:39:04','2025-10-06 10:57:21'),(51,123,'2025-10-06 11:03:07','2025-10-06 11:03:13'),(52,123,'2025-10-06 11:03:25','2025-10-06 11:03:32'),(53,3434,'2025-10-07 07:30:03','2025-10-07 07:30:12'),(54,3434,'2025-10-07 07:30:19','2025-10-07 07:30:50'),(55,3434,'2025-10-08 11:29:02','2025-10-08 11:50:51'),(56,123,'2025-10-08 11:42:04','2025-10-08 11:56:37'),(57,123,'2025-10-08 11:54:59','2025-10-08 11:55:08'),(58,123,'2025-10-08 11:55:19','2025-10-08 11:55:28'),(59,3434,'2025-10-08 11:56:18','2025-10-08 11:59:47'),(60,3434,'2025-10-08 12:06:51','2025-10-08 12:31:01'),(61,3434,'2025-10-08 12:31:09','2025-10-08 12:31:19'),(62,3434,'2025-10-08 12:41:09','2025-10-08 14:06:08'),(63,3434,'2025-10-08 14:06:16','2025-10-08 14:06:23'),(64,3434,'2025-10-08 14:07:25','2025-10-08 14:07:33'),(65,3434,'2025-10-09 15:25:54','2025-10-09 15:26:01'),(66,3434,'2025-10-09 15:31:41','2025-10-09 15:31:51'),(67,3434,'2025-10-09 15:35:50','2025-10-09 15:38:49'),(68,123,'2025-10-09 15:39:01','2025-10-09 15:39:08'),(69,3434,'2025-10-09 15:39:19','2025-10-10 15:33:19'),(70,3434,'2025-10-10 15:33:27','2025-10-12 08:35:27'),(71,3434,'2025-10-12 08:35:36','2025-10-12 12:09:25'),(72,3434,'2025-10-12 12:09:37','2025-10-13 09:54:00'),(73,3434,'2025-10-13 09:54:06','2025-10-14 18:14:03'),(74,3434,'2025-10-14 18:21:47','2025-10-14 21:23:53'),(75,3434,'2025-10-15 08:18:45','2025-10-17 12:49:35'),(76,123,'2025-10-17 12:37:08','2025-10-17 12:40:15'),(77,3434,'2025-10-17 12:49:38','2025-10-17 17:30:48'),(78,3434,'2025-10-17 17:30:51','2025-10-17 17:52:25'),(79,4343,'2025-10-17 17:52:28','2025-10-17 19:21:42'),(80,34,'2025-10-17 19:21:59','2025-10-29 16:30:27'),(81,3434,'2025-10-29 16:24:32','2025-10-29 16:29:35'),(82,34,'2025-10-29 16:30:35','0000-00-00 00:00:00'),(83,4343,'2025-10-29 16:30:45','0000-00-00 00:00:00'),(84,123,'2025-10-29 16:39:48','2025-10-29 16:51:34');
+INSERT INTO `reportes_entradas` VALUES (1,3434,'2025-09-04 12:26:12','2025-09-05 12:55:59'),(2,3434,'2025-09-05 12:56:05','2025-09-12 08:24:41'),(3,3434,'2025-09-12 08:25:59','2025-09-13 17:37:11'),(4,3434,'2025-09-13 17:37:17','2025-09-14 08:45:06'),(5,3434,'2025-09-14 08:45:13','2025-09-15 14:02:45'),(6,3434,'2025-09-15 14:02:54','2025-09-16 14:48:19'),(7,3434,'2025-09-16 14:48:25','2025-09-16 15:19:41'),(8,34,'2025-09-16 15:20:03','2025-09-16 15:29:29'),(9,123,'2025-09-16 15:29:40','2025-09-16 15:31:59'),(10,321,'2025-09-16 15:32:12','2025-09-16 15:36:54'),(11,3434,'2025-09-16 15:39:29','2025-09-16 15:40:27'),(12,123,'2025-09-16 15:40:38','2025-09-16 15:43:06'),(13,3434,'2025-09-16 15:43:37','2025-09-16 15:44:33'),(14,123,'2025-09-16 15:44:48','2025-09-16 15:47:03'),(15,3434,'2025-09-17 14:46:06','2025-09-17 14:57:31'),(16,3434,'2025-09-17 14:58:17','2025-09-17 14:58:23'),(17,3434,'2025-09-17 14:58:50','2025-09-17 14:59:06'),(18,3434,'2025-09-17 15:05:28','2025-09-17 15:05:32'),(19,3434,'2025-09-17 15:06:17','2025-09-17 15:06:22'),(20,3434,'2025-09-17 15:07:03','2025-09-17 15:07:08'),(21,3434,'2025-09-17 15:07:37','2025-09-17 15:10:03'),(22,3434,'2025-09-17 15:10:27','2025-09-17 15:10:32'),(23,3434,'2025-09-17 15:12:15','2025-09-17 15:12:30'),(24,3434,'2025-09-17 15:13:25','2025-09-17 15:13:29'),(25,3434,'2025-09-17 15:20:39','2025-09-18 15:44:49'),(26,3434,'2025-09-18 15:44:59','2025-09-20 14:20:35'),(27,3434,'2025-09-20 14:20:43','2025-09-20 14:24:00'),(28,34,'2025-09-20 14:24:19','2025-09-20 14:25:07'),(29,3434,'2025-09-20 14:25:19','2025-09-20 14:26:08'),(30,34,'2025-09-20 14:26:29','2025-09-20 14:27:37'),(31,123,'2025-09-20 14:27:55','2025-09-20 14:28:45'),(32,321,'2025-09-20 14:28:55','2025-09-20 14:30:10'),(33,3434,'2025-09-20 14:30:25','2025-09-20 16:07:06'),(34,123,'2025-09-20 16:09:04','2025-09-22 11:23:30'),(35,3434,'2025-09-22 11:22:27','2025-09-22 11:23:04'),(36,123,'2025-09-22 11:23:37','2025-09-22 11:42:34'),(37,3434,'2025-09-22 11:42:46','2025-09-22 11:43:42'),(38,123,'2025-09-22 11:43:54','2025-09-22 12:01:05'),(39,3434,'2025-09-23 10:02:58','2025-09-24 14:41:32'),(40,3434,'2025-09-24 14:41:39','2025-09-24 17:22:43'),(41,3434,'2025-09-25 12:04:13','2025-09-25 12:26:45'),(42,3434,'2025-09-25 12:40:21','2025-10-03 08:09:01'),(43,3434,'2025-10-03 08:09:08','2025-10-03 12:03:16'),(44,3434,'2025-10-03 12:03:22','2025-10-03 15:50:09'),(45,3434,'2025-10-03 15:50:16','2025-10-04 09:20:06'),(46,3434,'2025-10-04 09:20:14','2025-10-05 10:53:54'),(47,3434,'2025-10-05 10:54:01','2025-10-05 15:38:56'),(48,123,'2025-10-05 15:39:29','2025-10-06 10:38:56'),(49,3434,'2025-10-06 07:51:39','2025-10-06 10:38:11'),(50,123,'2025-10-06 10:39:04','2025-10-06 10:57:21'),(51,123,'2025-10-06 11:03:07','2025-10-06 11:03:13'),(52,123,'2025-10-06 11:03:25','2025-10-06 11:03:32'),(53,3434,'2025-10-07 07:30:03','2025-10-07 07:30:12'),(54,3434,'2025-10-07 07:30:19','2025-10-07 07:30:50'),(55,3434,'2025-10-08 11:29:02','2025-10-08 11:50:51'),(56,123,'2025-10-08 11:42:04','2025-10-08 11:56:37'),(57,123,'2025-10-08 11:54:59','2025-10-08 11:55:08'),(58,123,'2025-10-08 11:55:19','2025-10-08 11:55:28'),(59,3434,'2025-10-08 11:56:18','2025-10-08 11:59:47'),(60,3434,'2025-10-08 12:06:51','2025-10-08 12:31:01'),(61,3434,'2025-10-08 12:31:09','2025-10-08 12:31:19'),(62,3434,'2025-10-08 12:41:09','2025-10-08 14:06:08'),(63,3434,'2025-10-08 14:06:16','2025-10-08 14:06:23'),(64,3434,'2025-10-08 14:07:25','2025-10-08 14:07:33'),(65,3434,'2025-10-09 15:25:54','2025-10-09 15:26:01'),(66,3434,'2025-10-09 15:31:41','2025-10-09 15:31:51'),(67,3434,'2025-10-09 15:35:50','2025-10-09 15:38:49'),(68,123,'2025-10-09 15:39:01','2025-10-09 15:39:08'),(69,3434,'2025-10-09 15:39:19','2025-10-10 15:33:19'),(70,3434,'2025-10-10 15:33:27','2025-10-12 08:35:27'),(71,3434,'2025-10-12 08:35:36','2025-10-12 12:09:25'),(72,3434,'2025-10-12 12:09:37','2025-10-13 09:54:00'),(73,3434,'2025-10-13 09:54:06','2025-10-14 18:14:03'),(74,3434,'2025-10-14 18:21:47','2025-10-14 21:23:53'),(75,3434,'2025-10-15 08:18:45','2025-10-17 12:49:35'),(76,123,'2025-10-17 12:37:08','2025-10-17 12:40:15'),(77,3434,'2025-10-17 12:49:38','2025-10-17 17:30:48'),(78,3434,'2025-10-17 17:30:51','2025-10-17 17:52:25'),(79,4343,'2025-10-17 17:52:28','2025-10-17 19:21:42'),(80,34,'2025-10-17 19:21:59','2025-10-29 16:30:27'),(81,3434,'2025-10-29 16:24:32','2025-10-29 16:29:35'),(82,34,'2025-10-29 16:30:35','2025-10-29 17:34:39'),(83,4343,'2025-10-29 16:30:45','2025-10-30 15:45:22'),(84,123,'2025-10-29 16:39:48','2025-10-29 16:51:34'),(85,34,'2025-10-29 17:34:55','2025-10-30 15:45:57'),(86,4343,'2025-10-30 15:45:25','2025-10-30 18:59:47'),(87,34,'2025-10-30 15:45:59','2025-10-30 18:59:20'),(88,123,'2025-10-30 16:55:38','2025-10-30 17:32:36'),(89,123,'2025-10-30 18:24:02','2025-10-30 18:24:59'),(90,123,'2025-10-30 18:31:56','0000-00-00 00:00:00');
 /*!40000 ALTER TABLE `reportes_entradas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1037,7 +1068,7 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (34,'$2y$10$B3B3.eLTtqT.iJcPnh/m4.uSJ7M7j3tKvcLZii.D3B9BI5lgp2CwW',1,'True'),(123,'$2y$10$EUbg2UC5PG3DD2IUBrCf7OrQE.8AYST9kKAPP5MqmTU.9feSrr6Cm',2,'False'),(321,'$2y$10$b7GW4RMYoXkT7w35iXmYWuL3faGW5px.ZEi7bk4sMZZPzEwQcnjKK',3,'False'),(3434,'$2y$10$aaqOa8LN3ZdV7hviTWx7eufhAGPgvqZDWxgXmuUElh6iWfbKqTRXm',4,'False'),(4343,'$2y$10$a5bHaRGPIeE58e1chr9EBOxtFHqwKdhqBlsT.EasiWq/nooj3lfs6',0,'True');
+INSERT INTO `usuarios` VALUES (34,'$2y$10$B3B3.eLTtqT.iJcPnh/m4.uSJ7M7j3tKvcLZii.D3B9BI5lgp2CwW',1,'False'),(123,'$2y$10$EUbg2UC5PG3DD2IUBrCf7OrQE.8AYST9kKAPP5MqmTU.9feSrr6Cm',2,'True'),(321,'$2y$10$b7GW4RMYoXkT7w35iXmYWuL3faGW5px.ZEi7bk4sMZZPzEwQcnjKK',3,'False'),(3434,'$2y$10$aaqOa8LN3ZdV7hviTWx7eufhAGPgvqZDWxgXmuUElh6iWfbKqTRXm',4,'False'),(4343,'$2y$10$a5bHaRGPIeE58e1chr9EBOxtFHqwKdhqBlsT.EasiWq/nooj3lfs6',0,'False');
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1104,4 +1135,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-10-29 17:32:50
+-- Dump completed on 2025-10-30 19:01:09

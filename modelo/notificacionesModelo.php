@@ -390,7 +390,7 @@ require_once 'conexiondb.php';
 
         $consulta = "
             SELECT 
-                c.id_manual, c.ci, c.estado,
+                c.id_caso, c.ci, c.estado,
                 cf.fecha, cf.visto,
                 cc.tipo_ayuda, cc.categoria,
                 ci.descripcion, ci.creador,
@@ -471,9 +471,9 @@ require_once 'conexiondb.php';
               AND cf.visto = 0
         ";
 
-        // Agregar filtro por dirección si no es master
+        // Agregar filtro por dirección u oficina si no es master
         if ($direccion !== null) {
-            $consulta .= " AND c.direccion = :direccion";
+            $consulta .= " AND (c.direccion = :direccion OR c.oficina = :direccion)";
         }
 
         $consulta .= " ORDER BY cf.fecha DESC";
