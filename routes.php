@@ -92,4 +92,7 @@ Router::post('/caso_continuar','AtencionControl@caso_continuar');
 Router::get('/felicidades_caso_continuado','AtencionControl@felicidades_caso_continuado');
 Router::get('/casos_procesos_lista','AtencionControl@casos_procesos_lista');
 Router::get('/accion','AtencionControl@accion');
+Router::get('/editar_caso','AtencionControl@editar_caso');
+Router::post('/editar_caso_enviar','AtencionControl@editar_caso_enviar');
+Router::get('/casos_ajax','LoginControl@casos_ajax');
 ?>

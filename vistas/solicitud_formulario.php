@@ -128,7 +128,6 @@
                                 echo '<option value="">Ocurrió un error al cargar las comunidades</option>';
                             }
                             ?>
-
                         </select>
                     </div>
                 <div class="campo-formulario">

@@ -1,4 +1,4 @@
-const tipoAyudaSelect = document.getElementById('tipo_ayuda');
+const tipoAyudaSelect = document.getElementById('categoria');
 const subcategoriaContainer = document.getElementById('subcategoria_container');
 const subcategoriaSelect = document.getElementById('subcategoria');
 const campoExamen = document.getElementById('campo_examen');

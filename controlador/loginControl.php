@@ -39,45 +39,18 @@ class LoginControl {
             header('Location: ' . BASE_URL . '/');
             exit;
         }
-        $datos = [];
-        $msj = null;
-        
-        // Notificaciones de casos
-        
-        $notificaciones_casos = Notificaciones::mostrar_notificaciones_casos();
-        if($notificaciones_casos['exito']){
-            $datos['casos'] = $notificaciones_casos['datos']['casos'];
-        }
-
-
-        // Notificaciones generales (solicitud_ayuda)
-        // $notificaciones = Notificaciones::mostrarNotificaciones($_SESSION['id_rol']);
-        // if ($notificaciones['exito']) {
-        //     $datos = $notificaciones['datos'] ?? [];
-        // }
-
-        // Notificaciones de despacho y master (solo rol 2 y 4)
-        // if ($_SESSION['id_rol'] == 2 || $_SESSION['id_rol'] == 4) {
-        //     $notificaciones_despacho = Notificaciones::mostrar_notificaciones_despacho();
-        //     if ($notificaciones_despacho['exito']) {
-        //         $datos['despacho'] = $notificaciones_despacho['datos']['despacho'];
-        //     }
-        // }
-
-        // Notificaciones de desarrollo y master (solo rol 1 y 4)
-        // if ($_SESSION['id_rol'] == 1 || $_SESSION['id_rol'] == 4) {
-        //     $notificaciones_desarrollo = Notificaciones::mostrar_notificaciones_desarrollo();
-        //     if ($notificaciones_desarrollo['exito']) {
-        //         $datos['desarrollo'] = $notificaciones_desarrollo['datos']['desarrollo'];
-        //     }
-        // }
-
-        // if(!$notificaciones['exito'] && !$notificaciones_despacho['exito'] && !$notificaciones_desarrollo['exito']){
-        //     $msj = 'No se encontraron notificaciones';
-        // }
-        // Pasar los datos a la vista
         require_once 'vistas/main.php';
     }
+
+    public function casos_ajax() {
+    if (!isset($_SESSION['ci'])) {
+        echo json_encode(['exito' => false, 'mensaje' => 'Sesión no iniciada']);
+        return;
+    }
+        $notificaciones = Notificaciones::mostrar_notificaciones_casos();
+        echo json_encode($notificaciones);
+    }
+
 
 
     public function logout() {

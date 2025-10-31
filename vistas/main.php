@@ -10,53 +10,22 @@
 </head>
 <body class="body-main">
     <header class="header">
-        <div class="titulo-header">SASPP</div> 
-        <div class="header-right">
-            <div class="rol">Oficina: <?= $_SESSION['rol'] ?></div>
-            <?php if ($_SESSION['id_rol'] == 0 || $_SESSION['id_rol'] == 4) { ?>
-            <a href="<?= BASE_URL ?>/casos_ci_busqueda" class="nueva-solicitud-btn"><i class="fas fa-plus"></i> Nuevo Caso</a>
-            <?php } ?>
-            <?php if(!$_SESSION['id_rol'] == 0) {?>
-          <div class="notification-dropdown">
-                <button class="notificaciones-btn" id="btn-notificaciones">
-                    <i class="fas fa-bell"></i> Casos
-                    <?php
-                    $total = 0;
-                    foreach ($datos as $grupo) {
-                        if (isset($grupo['datos']) && is_array($grupo['datos'])) {
-                            $total += count($grupo['datos']);
-                        }
-                    }
-                    ?>
-                    <?php if ($total > 0): ?>
-                        <span class="badge"><?= $total ?></span>
-                    <?php endif; ?>
-                </button>
-                <div id="barra-notificaciones" class="barra-notificaciones oculto">
-                    <ul id="lista-notificaciones" class="notificaciones-lista">
-                        <?php if ($total > 0): ?>
-                            <?php foreach ($datos as $tipo => $grupo): ?>
-                            <?php foreach ($grupo['datos'] as $noti): ?>
-                                <li class="notificacion-item">
-                                    <strong><?= ucfirst($tipo) ?>:</strong>
-                                    <a href="<?= BASE_URL ?>/noti_caso?id_caso=<?= htmlspecialchars($noti['id_caso'])?>">
-                                        <?= htmlspecialchars($noti['descripcion']) ?><br>
-                                        <?= htmlspecialchars($noti['estado'] ?? 'Sin mensaje') ?>
-                                        <span class="fecha"><?= date('d/m/Y H:i', strtotime($noti['fecha'])) ?></span>
-                                    </a>
-                                </li>
-                            <?php endforeach; ?>
-                        <?php endforeach; ?>
-                            <a href="<?=BASE_URL?>/marcar_vistas_new">Marcar todos los casos como vistos</a>
-                        <?php else: ?>
-                            <li class="notificacion-item">No hay nuevos casos por atender.</li>
-                        <?php endif; ?>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <?php } ?>
-    </header>
+    <div class="titulo-header">SASPP</div> 
+    <div class="rol">Oficina: <?= htmlspecialchars($_SESSION['rol']) ?></div>
+    <div class="notification-dropdown">
+    <button class="notificaciones-btn" id="btn-notificaciones">
+        <i class="fas fa-bell"></i> Casos
+        <span class="badge" id="noti-total" style="display:none;"></span>
+    </button>
+
+    <div id="barra-notificaciones" class="barra-notificaciones oculto">
+        <ul id="lista-notificaciones" class="notificaciones-lista">
+            <li class="notificacion-item">Cargando notificaciones...</li>
+        </ul>
+        <a href="<?= BASE_URL ?>/marcar_vistas_new" id="marcar-vistas" style="display:none;">Marcar todos los casos como vistos</a>
+    </div>
+</div>
+</header>
     <nav class="navbar" aria-label="Menú principal">
         <?php if ($_SESSION['id_rol'] == 4) { ?>
             <div class="dropdown">
@@ -72,15 +41,6 @@
                     <a href="<?= BASE_URL ?>/estadisticas"><i class="fas fa-chart-bar"></i> Estadísticas de Solicitudes</a>
             </div>
         </div>
-    <!-- <div class="dropdown">
-        <button class="nav-btn dropdown-toggle" aria-label="Menú" id="menuDropdownBtn">
-            <i class="fas fa-chart-bar"></i> Estadísticas
-        </button>
-        <div class="dropdown-menu" id="menuDropdown">
-            
-            <a href="">Estadísticas de Usuarios</a>
-        </div>
-    </div> -->
     <?php } ?>
 
     <div class="dropdown">
@@ -98,14 +58,6 @@
             <?php } ?>
         </div>
     </div>
-
-    <!-- <div class="dropdown">
-        <button class="nav-btn dropdown-toggle" aria-label="Menú" id="menuDropdownBtn">
-            <i class="fas fa-file-alt"></i> Constancias
-        </button>
-        <div class="dropdown-menu" id="menuDropdown">
-        </div>
-    </div> -->
         </div>
     </div>
     <div class="dropdown">
@@ -143,13 +95,18 @@
     </main>
 </body>
 <script src="<?= BASE_URL ?>/public/js/msj.js"></script>
+<script src="<?= BASE_URL ?>/public/js/casos_ajax.js"></script>
 <script src="<?= BASE_URL ?>/public/js/sesionReload.js"></script>
 <script>
     const BASE_PATH = "<?php echo BASE_PATH; ?>";
-    <?php if (isset($msj)): ?> mostrarMensaje("<?= htmlspecialchars($msj) ?>", "info", 6500);
-        <?php endif; ?>
-        <?php if (isset($_GET['msj'])): ?> mostrarMensaje("<?= htmlspecialchars($_GET['msj']) ?>", "info", 6500);
-        <?php endif; ?>
+    const BASE_URL = "<?php echo BASE_URL; ?>";
+    <?php
+        $mensaje = $msj ?? $_GET['msj'] ?? null;
+        if ($mensaje):
+        ?>
+            mostrarMensaje("<?= htmlspecialchars($mensaje) ?>", "info", 6500);
+    <?php endif; ?>
+
 </script>
 <script src="<?= BASE_URL ?>/public/js/validarSesion.js"></script>
 <script src="<?= BASE_URL ?>/public/js/dropdown.js"></script>

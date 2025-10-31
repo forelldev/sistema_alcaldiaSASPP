@@ -185,7 +185,7 @@ class AtencionModelo{
         $db->beginTransaction();
 
         try {
-            $camposObligatorios = ['ci', 'descripcion', 'fecha', 'ci_user', 'nombre', 'apellido', 'correo', 'estado'];
+            $camposObligatorios = ['ci', 'descripcion', 'fecha', 'ci_user', 'nombre', 'apellido',  'estado'];
             foreach ($camposObligatorios as $campo) {
                 if (!isset($data[$campo]) || $data[$campo] === '') {
                     throw new Exception("Falta el campo obligatorio: $campo");
@@ -196,8 +196,10 @@ class AtencionModelo{
             $checkSolicitante = $db->prepare("SELECT COUNT(*) FROM solicitantes WHERE ci = :ci");
             $checkSolicitante->execute([':ci' => $data['ci']]);
             if ($checkSolicitante->fetchColumn() == 0) {
+                // Insertar en la tabla solicitantes
                 $insertSolicitante = $db->prepare("INSERT INTO solicitantes (ci, nombre, apellido, correo, fecha_creacion) 
                     VALUES (:ci, :nombre, :apellido, :correo, :fecha_creacion)");
+
                 $insertSolicitante->execute([
                     ':ci' => $data['ci'],
                     ':nombre' => $data['nombre'],
@@ -205,6 +207,27 @@ class AtencionModelo{
                     ':correo' => $data['correo'],
                     ':fecha_creacion' => $data['fecha']
                 ]);
+
+                // Obtener el ID generado automáticamente
+                $idSolicitante = $db->lastInsertId();
+
+                // Insertar en la tabla solicitantes_info usando el ID
+                $stmt3 = $db->prepare("INSERT INTO solicitantes_info (id_solicitante, telefono) 
+                    VALUES (:id_solicitante, :telefono)");
+
+                $stmt3->execute([
+                    ':id_solicitante' => $idSolicitante,
+                    ':telefono' => $data['telefono']
+                ]);
+
+                $stmt4 = $db->prepare("INSERT INTO solicitantes_comunidad (id_solicitante, comunidad) 
+                    VALUES (:id_solicitante, :comunidad)");
+
+                $stmt4->execute([
+                    ':id_solicitante' => $idSolicitante,
+                    ':comunidad' => $data['comunidad']
+                ]);
+
             }
 
             // Obtener datos del promotor
@@ -552,23 +575,118 @@ class AtencionModelo{
     }
 
    public static function actualizar_oficina($direccion, $id_caso) {
+        try {
+            $conexion = DB::conectar();
+
+            $sql = "UPDATE casos SET oficina = :direccion WHERE id_caso = :id_caso";
+            $stmt = $conexion->prepare($sql);
+            $stmt->bindParam(':direccion', $direccion, PDO::PARAM_STR);
+            $stmt->bindParam(':id_caso', $id_caso, PDO::PARAM_INT);
+            $stmt->execute();
+
+            return $stmt->rowCount() > 0;
+
+        } catch (PDOException $e) {
+            error_log("Error al actualizar oficina del caso $id_caso: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public static function edicion_vista($id_caso)
+{
     try {
-        $conexion = DB::conectar();
+        $db = DB::conectar();
+        $stmt = $db->prepare("
+            SELECT 
+                casos.*,
+                casos_info.*,
+                casos_categoria.*,
+                casos_archivos.*
+            FROM casos
+            LEFT JOIN casos_info ON casos.id_caso = casos_info.id_caso
+            LEFT JOIN casos_categoria ON casos.id_caso = casos_categoria.id_caso
+            LEFT JOIN casos_archivos ON casos.id_caso = casos_archivos.id_caso
+            WHERE casos.id_caso = :id_caso
+        ");
+        $stmt->execute([':id_caso' => $id_caso]);
+        $caso = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $sql = "UPDATE casos SET oficina = :direccion WHERE id_caso = :id_caso";
-        $stmt = $conexion->prepare($sql);
-        $stmt->bindParam(':direccion', $direccion, PDO::PARAM_STR);
-        $stmt->bindParam(':id_caso', $id_caso, PDO::PARAM_INT);
-        $stmt->execute();
-
-        return $stmt->rowCount() > 0;
-
+        if ($caso) {
+            return ['exito' => true, 'datos' => $caso];
+        } else {
+            return ['exito' => false, 'error' => 'No se encontró el caso'];
+        }
     } catch (PDOException $e) {
-        error_log("Error al actualizar oficina del caso $id_caso: " . $e->getMessage());
-        return false;
+        return ['exito' => false, 'error' => $e->getMessage()];
     }
 }
 
+
+    public static function edicion_enviar($data){
+    try {
+        $db = DB::conectar();
+        $db->beginTransaction();
+
+        // Actualizar dirección en tabla casos
+        $stmtCasos = $db->prepare("
+            UPDATE casos SET direccion = :direccion WHERE id_caso = :id_caso
+        ");
+        $stmtCasos->execute([
+            ':direccion' => $data['direccion'],
+            ':id_caso' => $data['id_caso']
+        ]);
+
+        // Actualizar fecha_modificacion en tabla casos_fecha
+        $stmtFecha = $db->prepare("
+            UPDATE casos_fecha SET fecha_modificacion = :fecha WHERE id_caso = :id_caso
+        ");
+        $stmtFecha->execute([
+            ':fecha' => $data['fecha'],
+            ':id_caso' => $data['id_caso']
+        ]);
+
+        // Actualizar descripción en casos_info si se ha cambiado
+        $stmtCheck = $db->prepare("SELECT descripcion FROM casos_info WHERE id_caso = :id_caso");
+        $stmtCheck->execute([':id_caso' => $data['id_caso']]);
+        $actual = $stmtCheck->fetchColumn();
+
+        if ($actual !== $data['descripcion']) {
+            $stmtInfo = $db->prepare("
+                UPDATE casos_info SET descripcion = :descripcion WHERE id_caso = :id_caso
+            ");
+            $stmtInfo->execute([
+                ':descripcion' => $data['descripcion'],
+                ':id_caso' => $data['id_caso']
+            ]);
+        }
+
+        // Validar si se recibió archivo carta
+        if (!empty($_FILES['carta']['name'])) {
+            $nombreArchivo = basename($_FILES['carta']['name']);
+            $rutaDestino = 'archivos/cartas/' . $nombreArchivo;
+
+            if (move_uploaded_file($_FILES['carta']['tmp_name'], $rutaDestino)) {
+                $stmtArchivo = $db->prepare("
+                    UPDATE casos SET carta = :carta WHERE id_caso = :id_caso
+                ");
+                $stmtArchivo->execute([
+                    ':carta' => $nombreArchivo,
+                    ':id_caso' => $data['id_caso']
+                ]);
+            } else {
+                $db->rollBack();
+                return ['exito' => false, 'error' => 'No se pudo guardar la carta'];
+            }
+        }
+
+        $db->commit();
+        return ['exito' => true];
+
+    } catch (PDOException $e) {
+        $db->rollBack();
+        return ['exito' => false, 'error' => $e->getMessage()];
+    }
+}
 
 
 

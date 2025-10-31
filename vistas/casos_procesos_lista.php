@@ -90,10 +90,15 @@
 <script src="<?= BASE_URL ?>/public/js/msj.js"></script>
 <script>
     const BASE_PATH = "<?php echo BASE_PATH; ?>";
-    <?php if (isset($msj)): ?> mostrarMensaje("<?= htmlspecialchars($msj) ?>", "info", 6500);
+    <?php
+        $mensaje = $msj ?? $_GET['msj'] ?? null;
+        if ($mensaje):
+        ?>
+            <script>
+                mostrarMensaje("<?= htmlspecialchars($mensaje) ?>", "info", 6500);
+            </script>
     <?php endif; ?>
-    <?php if (isset($_GET['msj'])): ?> mostrarMensaje("<?= htmlspecialchars($_GET['msj']) ?>", "info", 6500);
-    <?php endif; ?>
+
 </script>
 <script src="<?= BASE_URL ?>/public/js/sesionReload.js"></script>
 <script src="<?= BASE_URL ?>/public/js/validarSesion.js"></script>

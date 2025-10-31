@@ -1,7 +1,9 @@
 <?php
 require_once 'modelo/AtencionModelo.php';
 require_once 'modelo/procesarModelo.php';
+require_once 'modelo/solicitudModelo.php';
 class AtencionControl {
+    // MOSTRAR CASOS, LISTA
    public static function casos_lista() {
     $rol = $_SESSION['id_rol'] ?? null;
 
@@ -27,10 +29,13 @@ class AtencionControl {
     require_once 'vistas/casos_lista.php';
 }
 
+    // VISTA DE BUSQUEDA DE CI:
 
     public static function casos_ci_busqueda(){
         require_once 'vistas/casos_busqueda.php';
     }
+
+    // PRECARGA DE DATOS:
 
     private static function obtenerDatosBeneficiario($ci) {
         $data = [
@@ -43,6 +48,10 @@ class AtencionControl {
         }
         return $data;
     }
+
+
+    // CARGA AL FORMULARIO:
+
     public static function casos_formulario(){
         if(isset($_POST['ci'])){
             $ci = $_POST['ci'];
@@ -73,6 +82,9 @@ class AtencionControl {
         }
     }
 
+
+    // SI SE ENCUENTRAN CASOS ANTERIORES:
+
     public static function casos_anteriores(){
         if(isset($_POST['ci'])){
             $ci = $_POST['ci'];
@@ -86,6 +98,8 @@ class AtencionControl {
             require_once 'vistas/casos_formulario_cargado.php';
         }
     }
+
+    // REGISTRAR EL CASO:
 
     public static function casos_enviar() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST)) {
@@ -117,9 +131,15 @@ class AtencionControl {
         }
     }
 
+
+    // REDIRIGIR AL SER EXITOSO EL REGISTRO:
+
     public static function felicidades_casos (){
         require_once 'vistas/felicidades_casos.php';
     }
+    
+
+    // ATENDER EL CASO:
 
     public static function atender_caso(){
         if(isset($_GET['id_caso'])){
@@ -138,6 +158,8 @@ class AtencionControl {
         }
         require_once 'vistas/atender_caso.php';
     }
+
+    // CONTINUAR EL CASO:
 
     public static function continuar_caso(){
         if(isset($_GET['id_caso']) && isset($_GET['direccion']) && isset($_GET['ci'])){
@@ -166,6 +188,8 @@ class AtencionControl {
 
     }
 
+    // MARCAR VISTAS DE LOS CASOS EN NOTIFICACIONES MAIN
+
     public static function marcar_vistas_new(){
         $resultado = AtencionModelo::marcar_vistas();
         if($resultado['exito']){
@@ -176,6 +200,8 @@ class AtencionControl {
         }
         header('Location: '.BASE_URL.'/main?msj='.$msj);
     }
+
+    // FILTRAR CASO
 
     public static function filtrar_caso() {
         if (isset($_GET['filtro'])) {
@@ -193,6 +219,8 @@ class AtencionControl {
 
         require_once 'vistas/casos_lista.php';
     }
+
+    // CASO CONTINUAR, CARGAR FORMULARIO DE CADA OFICINA: 
 
     public static function caso_continuar(){
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST)) {
@@ -223,9 +251,13 @@ class AtencionControl {
         }
     }
 
+    // REDIRIGIR AL ENVIAR EL FORMULARIO DE CADA OFICINA 
+
     public static function felicidades_caso_continuado(){
         require_once 'vistas/felicidades_caso_continuado.php';
     }
+
+    // LISTA DE CASOS EN PROCESOS:
 
     public static function casos_procesos_lista(){
         $id_rol = $_SESSION['id_rol'];
@@ -241,6 +273,8 @@ class AtencionControl {
        }
         require_once 'vistas/casos_procesos_lista.php';
     }
+
+    // ACCIONES DE DESPACHO BOTONES:
 
     public static function accion(){
         if(isset($_GET['id_caso']) && isset($_GET['accion'])){
@@ -272,6 +306,53 @@ class AtencionControl {
             $msj = 'Ocurrió un error, no se recibió la acción';
         }
         require_once 'vistas/casos_procesos_lista.php';
+    }
+
+    // VISTA CON SU CARGA DE DATOS PARA EDITAR UN CASO
+
+    public static function editar_caso(){
+        if(isset($_GET['id_caso'])){
+            $id_caso = $_GET['id_caso'];
+            $resultado = AtencionModelo::edicion_vista($id_caso);
+            if($resultado){
+                $datos = $resultado['datos'];
+            }
+            else{
+                $msj = 'Ocurrió un  en el precesamiento del id_des';
+            }
+        }
+        require_once 'vistas/casos_editar.php';
+    }
+
+    public static function editar_caso_enviar(){
+        if(isset($_POST['id_caso'])){
+        date_default_timezone_set('America/Caracas');
+        $_POST['fecha'] = date('Y-m-d H:i:s');
+        $_POST['ci_user'] = $_SESSION['ci'];
+        $id_caso = $_POST['id_caso'];
+        $resultado = AtencionModelo::edicion_enviar($_POST);
+            if($resultado['exito']){
+                header('Location: '.BASE_URL.'/casos_lista?msj=Caso editado con éxito!');
+                date_default_timezone_set('America/Caracas');
+                $fecha = date('Y-m-d H:i:s');
+                $accion = 'Editó información del caso';
+                Procesar::registrarReporte($id_caso,$fecha,$accion,$_SESSION['ci']);
+            }
+            else{
+                $msj = "Error" . $resultado['error'];
+                $id_caso = $_POST['id_caso'] ?? null;
+                if($id_caso){
+                    $resultado = AtencionModelo::edicion_vista($id_caso);
+                    if($resultado){
+                        $datos=$resultado['datos'];
+                    }
+                }
+                require_once 'vistas/casos_editar.php';
+            }               
+        }
+        else{
+            $msj = 'Surgió un error obteniendo datos (POST)';
+        }
     }
 
 }
