@@ -22,7 +22,7 @@
             <h2><i class="fa fa-search"></i> Buscar por CI</h2>
             <div class="campo-user">
             <label for="ci">Cédula de Identidad</label>
-            <input type="text" name="ci" placeholder="Ingrese su CI" class="input-ci" required>
+            <input type="text" name="ci" placeholder="Ingrese su CI" class="input-ci" required oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="10">
             </div>
             <button type="submit" value="Buscar" class="boton-enviar-ayuda"><i class="fa fa-search"></i>Buscar</button>
         </form>

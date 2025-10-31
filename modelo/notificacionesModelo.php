@@ -434,20 +434,22 @@ require_once 'conexiondb.php';
         $conexion = DB::conectar();
         $resultadoFinal = [];
 
-        // Determinar dirección según el rol del usuario
-        $direccion = null;
-        switch ($_SESSION['id_rol']) {
-            case 1:
-                $direccion = 'Desarrollo Social';
+        // Determinar rol y oficina
+        $rol = $_SESSION['id_rol'] ?? null;
+        $filtro = '';
+
+        switch ($rol) {
+            case 1: // Desarrollo Social
+                $filtro = "c.estado = 'Sin Atender' AND c.direccion = 'Desarrollo Social'";
                 break;
-            case 2:
-                $direccion = 'Despacho';
+            case 2: // Despacho
+                $filtro = "c.estado = 'En Proceso' AND c.oficina = 'Despacho'";
                 break;
-            case 3:
-                $direccion = 'Administracion';
-                break;
-            case 4:
-                $direccion = null; // master: sin filtro de dirección
+            // case 3: // Administración
+            //     $filtro = "c.estado = 'Sin Atender' AND c.direccion = 'Administracion'";
+            //     break;
+            case 4: // Master
+                $filtro = "1=1"; // sin filtro
                 break;
             default:
                 return [
@@ -456,7 +458,7 @@ require_once 'conexiondb.php';
                 ];
         }
 
-        // Construir consulta base
+        // Consulta con lógica ajustada
         $consulta = "
             SELECT 
                 c.*, 
@@ -467,29 +469,18 @@ require_once 'conexiondb.php';
             LEFT JOIN casos_info ci ON c.id_caso = ci.id_caso
             LEFT JOIN casos_categoria cc ON c.id_caso = cc.id_caso
             LEFT JOIN casos_fecha cf ON c.id_caso = cf.id_caso
-            WHERE c.estado = 'Sin Atender'
-              AND cf.visto = 0
+            WHERE cf.visto = 0
+              AND $filtro
+            ORDER BY cf.fecha DESC
         ";
 
-        // Agregar filtro por dirección u oficina si no es master
-        if ($direccion !== null) {
-            $consulta .= " AND (c.direccion = :direccion OR c.oficina = :direccion)";
-        }
-
-        $consulta .= " ORDER BY cf.fecha DESC";
-
         $stmt = $conexion->prepare($consulta);
-
-        if ($direccion !== null) {
-            $stmt->bindParam(':direccion', $direccion, PDO::PARAM_STR);
-        }
-
         $stmt->execute();
         $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if ($resultado) {
             foreach ($resultado as &$item) {
-                $item['id_doc'] = $item['id_caso']; // compatibilidad con vistas
+                $item['id_doc'] = $item['id_caso'];
             }
             unset($item);
 
@@ -500,17 +491,9 @@ require_once 'conexiondb.php';
             ];
         }
 
-        if (!empty($resultadoFinal)) {
-            return [
-                'exito' => true,
-                'datos' => $resultadoFinal
-            ];
-        } else {
-            return [
-                'exito' => false,
-                'mensaje' => 'No se encontraron notificaciones sin atender.'
-            ];
-        }
+        return !empty($resultadoFinal)
+            ? ['exito' => true, 'datos' => $resultadoFinal]
+            : ['exito' => false, 'mensaje' => 'No se encontraron notificaciones pendientes.'];
 
     } catch (Exception $e) {
         error_log("Error al obtener notificaciones de casos: " . $e->getMessage());
@@ -520,6 +503,7 @@ require_once 'conexiondb.php';
         ];
     }
 }
+
 
 
   }

@@ -11,6 +11,9 @@
 <body class="body-main">
     <header class="header">
     <div class="titulo-header">SASPP</div> 
+        <?php if (in_array($_SESSION['id_rol'], [0, 4])): ?> 
+            <a href="<?= BASE_URL ?>/casos_ci_busqueda" class="nueva-solicitud-btn"><i class="fas fa-plus"></i> Nuevo Caso </a> 
+        <?php endif; ?>
     <div class="rol">Oficina: <?= htmlspecialchars($_SESSION['rol']) ?></div>
     <div class="notification-dropdown">
     <button class="notificaciones-btn" id="btn-notificaciones">

@@ -491,6 +491,10 @@ class AtencionModelo{
                 ':id_caso' => $data['id_caso']
             ]);
 
+            $sqlVisto = "UPDATE casos_fecha SET visto = 0 WHERE id_caso = :id_caso";
+            $stmtVisto = $conexion->prepare($sqlVisto);
+            $stmtVisto->execute([':id_caso'=> $data['id_caso']]);
+
             return ['exito' => true];
 
         } catch (Exception $e) {

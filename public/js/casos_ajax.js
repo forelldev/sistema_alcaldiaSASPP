@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cargarNotificaciones();
 
     // Actualizar cada 60 segundos
-    setInterval(cargarNotificaciones, 60000);
+    setInterval(cargarNotificaciones, 20000);
 
     function cargarNotificaciones() {
         fetch(BASE_PATH + 'casos_ajax')
