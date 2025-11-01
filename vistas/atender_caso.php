@@ -70,8 +70,13 @@
 
 <script>
     const BASE_PATH = "<?php echo BASE_PATH; ?>";
-    <?php if (isset($msj)):?> 
-        mostrarMensaje("<?= htmlspecialchars($msj) ?>", "info", 6500);
+     <?php
+        $mensaje = $msj ?? $_GET['msj'] ?? null;
+        if ($mensaje):
+        ?>
+            <script>
+                mostrarMensaje("<?= htmlspecialchars($mensaje) ?>", "info", 6500);
+            </script>
     <?php endif; ?>
 </script>
 
